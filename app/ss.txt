@@ -1,0 +1,14 @@
+        <section className="section-padding bg-[#E8E9E9]">
+            <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl md:text-5xl font-bold text-black mb-6">
+                        Transforming Vision Into Reality
+                    </h2>
+                    <p className="text-lg md:text-xl text-[#333333] max-w-3xl mx-auto leading-relaxed">
+                        A multifaceted leader bridging entrepreneurship, technology, and community impact
+                        with a proven track record of innovation and excellence.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {highlights.map((highlight, index) => (
