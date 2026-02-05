@@ -30,11 +30,10 @@ export async function POST(request: Request) {
     const title = formData.get('title') as string;
     const excerpt = formData.get('excerpt') as string;
     const content = formData.get('content') as string;
-    const category = formData.get('category') as string;
     const image = formData.get('image') as File | null;
     const readTime = (formData.get('readTime') as string) || '5 min';
 
-    if (!title || !content || !category) {
+    if (!title || !content) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -62,7 +61,6 @@ export async function POST(request: Request) {
         title,
         excerpt,
         content,
-        category,
         image: imageUrl,
         readTime,
       },

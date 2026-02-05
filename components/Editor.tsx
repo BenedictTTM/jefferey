@@ -16,7 +16,7 @@ const modules = {
         [{ header: [1, 2, 3, false] }],
         ['bold', 'italic', 'underline', 'strike', 'blockquote'],
         [{ list: 'ordered' }, { list: 'bullet' }],
-        ['link', 'image'],
+        ['link'],
         ['clean'],
     ],
 };
@@ -24,8 +24,8 @@ const modules = {
 const formats = [
     'header',
     'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet',
-    'link', 'image',
+    'list',
+    'link',
 ];
 
 export default function Editor({ value, onChange }: EditorProps) {

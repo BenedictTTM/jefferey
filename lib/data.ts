@@ -1,12 +1,5 @@
 
-export const categories = [
-    "All Posts",
-    "Entrepreneurship",
-    "Real Estate",
-    "Digital Transformation",
-    "Leadership",
-    "Agriculture"
-];
+
 
 export const blogPosts = [
     {

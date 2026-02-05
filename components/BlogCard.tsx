@@ -6,7 +6,7 @@ interface BlogPost {
     title: string;
     excerpt: string;
     date: string;
-    category: string;
+
     image: string;
     readTime: string;
 }
@@ -34,8 +34,7 @@ export default function BlogCard({ post }: BlogCardProps) {
                 {/* Content */}
                 <div className="flex-1 p-8">
                     <div className="flex items-center gap-4 mb-4 text-sm text-[var(--color-mba-text-grey)] flex-wrap">
-                        <span className="font-medium text-[var(--color-mba-blue)] whitespace-nowrap">{post.category}</span>
-                        <span>•</span>
+
                         <time dateTime={post.date} className="whitespace-nowrap">{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</time>
                         <span>•</span>
                         <span className="whitespace-nowrap">{post.readTime} read</span>

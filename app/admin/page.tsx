@@ -8,7 +8,7 @@ import { Plus, Edit, Trash2, ArrowLeft } from 'lucide-react';
 interface Post {
     id: string;
     title: string;
-    category: string;
+
     date: string;
 }
 
@@ -62,7 +62,7 @@ export default function AdminPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 p-8">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-2xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <div className="flex items-center gap-4">
                         <Link href="/" className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -84,7 +84,6 @@ export default function AdminPage() {
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-100">
                                 <th className="p-6 text-sm font-semibold text-gray-600 uppercase tracking-wider">Title</th>
-                                <th className="p-6 text-sm font-semibold text-gray-600 uppercase tracking-wider">Category</th>
                                 <th className="p-6 text-sm font-semibold text-gray-600 uppercase tracking-wider">Date</th>
                                 <th className="p-6 text-sm font-semibold text-gray-600 uppercase tracking-wider text-right">Actions</th>
                             </tr>
@@ -93,11 +92,6 @@ export default function AdminPage() {
                             {posts.map((post) => (
                                 <tr key={post.id} className="hover:bg-gray-50 transition-colors">
                                     <td className="p-6 font-medium text-gray-900">{post.title}</td>
-                                    <td className="p-6 text-gray-600">
-                                        <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
-                                            {post.category}
-                                        </span>
-                                    </td>
                                     <td className="p-6 text-gray-600">
                                         {new Date(post.date).toLocaleDateString()}
                                     </td>

@@ -66,7 +66,6 @@ export async function PUT(
     const title = formData.get('title') as string;
     const excerpt = formData.get('excerpt') as string;
     const content = formData.get('content') as string;
-    const category = formData.get('category') as string;
     const image = formData.get('image') as File | null;
     const readTime = formData.get('readTime') as string;
 
@@ -74,7 +73,6 @@ export async function PUT(
       title,
       excerpt,
       content,
-      category,
       readTime,
     };
 

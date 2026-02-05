@@ -14,7 +14,7 @@ model Post {
   excerpt   String
   content   String
   date      DateTime @default(now())
-  category  String
+
   image     String
   readTime  String   @default("5 min")
 }

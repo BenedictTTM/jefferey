@@ -44,8 +44,6 @@ export default function BlogPostPage({ params }: Props) {
                                     >
                                         Blog
                                     </Link>
-                                    <span>/</span>
-                                    <span className="text-[var(--color-mba-blue)]">{post.category}</span>
                                 </div>
 
                                 {/* Header */}
@@ -94,9 +92,6 @@ export default function BlogPostPage({ params }: Props) {
                                 <div className="border-t border-[var(--color-mba-border)] pt-8 mt-8">
                                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                                         <div className="flex gap-2">
-                                            <span className="px-3 py-1 bg-[var(--color-mba-surface)] text-[var(--color-mba-text-grey)] text-sm rounded-full">
-                                                {post.category}
-                                            </span>
                                         </div>
                                         <div className="flex gap-4">
                                             <span className="text-[var(--color-mba-text-grey)] text-sm font-medium">Share:</span>

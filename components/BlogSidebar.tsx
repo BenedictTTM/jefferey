@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { categories, recentPosts } from "@/lib/data";
+import { recentPosts } from "@/lib/data";
 
 export default function BlogSidebar() {
     return (
@@ -14,22 +14,7 @@ export default function BlogSidebar() {
                 />
             </div>
 
-            {/* Categories */}
-            <div className="bg-[var(--color-mba-surface)] p-6 border border-[var(--color-mba-border)]">
-                <h3 className="text-lg font-bold text-[var(--color-mba-text-primary)] mb-4">Categories</h3>
-                <ul className="space-y-2">
-                    {categories.map((category, index) => (
-                        <li key={index}>
-                            <Link
-                                href={`/blog?category=${category.toLowerCase().replace(' ', '-')}`}
-                                className="text-[var(--color-mba-text-grey)] hover:text-[var(--color-mba-blue)] transition-smooth block py-1"
-                            >
-                                {category}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+
 
             {/* Recent Posts */}
             <div className="bg-[var(--color-mba-surface)] p-6 border border-[var(--color-mba-border)]">
