@@ -8,6 +8,9 @@ import { use } from 'react';
 
 import Editor from '@/components/Editor';
 
+import { postSchema } from '@/lib/schemas';
+import { z } from 'zod';
+
 export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
@@ -16,6 +19,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
     const [post, setPost] = useState<any>(null);
     const [content, setContent] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     useEffect(() => {
         fetchPost();
@@ -56,8 +60,32 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSaving(true);
+        setErrors({});
 
         const formData = new FormData(e.currentTarget);
+        const imageFile = formData.get('image') as File;
+
+        const data = {
+            title: formData.get('title'),
+            excerpt: formData.get('excerpt'),
+            content: content,
+            readTime: formData.get('readTime'),
+            // Only include image if a new file is uploaded
+            ...(imageFile && imageFile.size > 0 ? { image: imageFile } : {}),
+        };
+
+        const result = postSchema.safeParse(data);
+
+        if (!result.success) {
+            const formattedErrors: Record<string, string> = {};
+            result.error.issues.forEach((issue) => {
+                formattedErrors[issue.path[0] as string] = issue.message;
+            });
+            setErrors(formattedErrors);
+            setSaving(false);
+            return;
+        }
+
         formData.set('content', content);
 
         try {
@@ -91,137 +119,200 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
     if (!post) return null;
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-2xl mx-auto">
-                <div className="flex items-center gap-4 mb-6">
-                    <Link
-                        href="/admin"
-                        className="p-2 hover:bg-gray-200 rounded-full transition-colors"
-                    >
-                        <ArrowLeft className="w-5 h-5 text-gray-600" />
-                    </Link>
-                    <h1 className="text-2xl font-bold text-gray-900">Edit Post</h1>
+        <div className="min-h-screen bg-gray-50 pb-8">
+            <form onSubmit={handleSubmit}>
+                {/* Header */}
+                <div className="bg-white border-b sticky top-0 z-10">
+                    <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+                        <div>
+                            <h1 className="text-2xl font-serif font-bold text-gray-900">Edit Post</h1>
+                            <p className="text-gray-500 text-xs mt-0.5">Updates to this post will be reflected immediately.</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors text-xs"
+                            >
+                                Save Draft
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={saving}
+                                className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs flex items-center gap-2"
+                            >
+                                {saving && (
+                                    <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                )}
+                                {saving ? 'Saving...' : 'Update Post'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 space-y-5 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-600"></div>
-                    <div className="grid grid-cols-1 gap-4">
-                        <div className="space-y-1.5">
-                            <label htmlFor="title" className="block text-sm font-semibold text-gray-800">
-                                Title
-                            </label>
-                            <input
-                                type="text"
-                                name="title"
-                                id="title"
-                                defaultValue={post.title}
-                                required
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white text-sm"
-                                placeholder="Enter post title"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                        <label htmlFor="excerpt" className="block text-sm font-semibold text-gray-800">
-                            Excerpt
-                        </label>
-                        <textarea
-                            name="excerpt"
-                            id="excerpt"
-                            defaultValue={post.excerpt}
-                            required
-                            rows={2}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white text-sm"
-                            placeholder="Brief summary used in cards"
-                        />
-                    </div>
-
-                    <div className="space-y-1.5">
-                        <label htmlFor="content" className="block text-sm font-semibold text-gray-800">
-                            Content
-                        </label>
-                        <div className="relative">
-                            <Editor value={content} onChange={setContent} />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                        <div className="space-y-1.5">
-                            <label htmlFor="readTime" className="block text-sm font-semibold text-gray-800">
-                                Read Time
-                            </label>
-                            <input
-                                type="text"
-                                name="readTime"
-                                id="readTime"
-                                defaultValue={post.readTime}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white text-sm"
-                            />
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label htmlFor="image" className="block text-sm font-semibold text-gray-800">
-                                Featured Image
-                            </label>
-                            <div className="p-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors bg-gray-50">
-                                {(imagePreview || post.image) && (
-                                    <div className="mb-2 relative group">
-                                        <img
-                                            src={imagePreview || post.image}
-                                            alt="Current featured"
-                                            className="w-full h-32 object-cover rounded-lg shadow-sm border border-gray-200"
-                                        />
-                                        {imagePreview && (
-                                            <button
-                                                type="button"
-                                                onClick={() => setImagePreview(null)}
-                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                            </button>
-                                        )}
-                                        {!imagePreview && (
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                                                <p className="text-white font-medium text-xs">Current Image</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
+                <div className="max-w-4xl mx-auto px-4 py-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* Main Content - Left Column */}
+                        <div className="lg:col-span-2 space-y-5">
+                            <div className="space-y-2">
+                                <label htmlFor="title" className="block text-sm font-bold text-gray-900">
+                                    Post Title
+                                </label>
                                 <input
-                                    type="file"
-                                    name="image"
-                                    id="image"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"
+                                    type="text"
+                                    name="title"
+                                    id="title"
+                                    defaultValue={post.title}
+                                    className={`w-full px-3 py-2 bg-white border rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-gray-900 placeholder-gray-400 text-base ${errors.title ? 'border-red-500' : 'border-gray-200'
+                                        }`}
+                                    placeholder="Enter a catchy title..."
                                 />
-                                <p className="text-xs text-gray-500 mt-1 ml-1">Leave empty to keep current image</p>
+                                {errors.title && <p className="text-red-500 text-xs">{errors.title}</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="excerpt" className="block text-sm font-bold text-gray-900">
+                                    Excerpt
+                                </label>
+                                <textarea
+                                    name="excerpt"
+                                    id="excerpt"
+                                    defaultValue={post.excerpt}
+                                    rows={3}
+                                    className={`w-full px-3 py-2 bg-white border rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm resize-none ${errors.excerpt ? 'border-red-500' : 'border-gray-200'
+                                        }`}
+                                    placeholder="Write a short summary that will appear in previews..."
+                                />
+                                {errors.excerpt && <p className="text-red-500 text-xs">{errors.excerpt}</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="content" className="block text-sm font-bold text-gray-900">
+                                    Content
+                                </label>
+                                <div className={`border rounded-lg bg-white overflow-hidden ${errors.content ? 'border-red-500' : 'border-gray-200'}`}>
+                                    <Editor value={content} onChange={setContent} />
+                                </div>
+                                {errors.content && <p className="text-red-500 text-xs">{errors.content}</p>}
+                            </div>
+                        </div>
+
+                        {/* Sidebar - Right Column */}
+                        <div className="space-y-6">
+                            {/* Featured Image */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-bold text-gray-900">
+                                    Featured Image
+                                </label>
+                                <div className={`relative group border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center text-center transition-all hover:bg-gray-50 ${errors.image ? 'border-red-500 bg-red-50/50' : 'border-gray-300'
+                                    }`}>
+                                    {(imagePreview || post.image) ? (
+                                        <div className="w-full relative">
+                                            <img
+                                                src={imagePreview || post.image}
+                                                alt="Preview"
+                                                className="w-full h-40 object-cover rounded-lg shadow-sm"
+                                            />
+                                            {imagePreview && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setImagePreview(null);
+                                                    }}
+                                                    className="absolute top-2 right-2 bg-white/90 text-red-500 rounded-full p-1.5 shadow-sm opacity-0 group-hover:opacity-100 transition-all hover:bg-white"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                </button>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mb-2 text-gray-400">
+                                                <Upload className="w-5 h-5" />
+                                            </div>
+                                            <p className="text-xs font-semibold text-gray-900">Click to upload or drag</p>
+                                            <p className="text-[10px] text-gray-500 mt-1">PNG, JPG or WEBP (max. 5MB)</p>
+                                        </>
+                                    )}
+                                    <input
+                                        type="file"
+                                        name="image"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    />
+                                </div>
+                                {errors.image && <p className="text-red-500 text-xs">{errors.image}</p>}
+                            </div>
+
+                            {/* Read Time */}
+                            <div className="space-y-2">
+                                <label htmlFor="readTime" className="block text-sm font-bold text-gray-900">
+                                    Estimated Read Time
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        name="readTime"
+                                        id="readTime"
+                                        defaultValue={post.readTime}
+                                        className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
+                                        placeholder="e.g. 5"
+                                    />
+                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-medium">mins</span>
+                                </div>
+                            </div>
+
+                            {/* Category - Visual Only */}
+                            <div className="space-y-2">
+                                <label className="block text-sm font-bold text-gray-900">
+                                    Category
+                                </label>
+                                <div className="relative">
+                                    <select className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-gray-900 text-sm appearance-none cursor-pointer">
+                                        <option>News</option>
+                                        <option>Tutorial</option>
+                                        <option>Article</option>
+                                    </select>
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Post Visibility - Visual Only */}
+                            <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100 space-y-3">
+                                <div className="flex items-center gap-2 text-blue-900 font-bold text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+                                    Post Visibility
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="flex items-center gap-2 cursor-pointer group">
+                                        <div className="relative flex items-center">
+                                            <input type="radio" name="visibility" defaultChecked className="peer sr-only" />
+                                            <div className="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:border-blue-600 peer-checked:border-4 transition-all bg-white"></div>
+                                        </div>
+                                        <span className="text-gray-700 text-xs group-hover:text-gray-900 font-medium">Public (Live immediately)</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 cursor-pointer group">
+                                        <div className="relative flex items-center">
+                                            <input type="radio" name="visibility" className="peer sr-only" />
+                                            <div className="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:border-blue-600 peer-checked:border-4 transition-all bg-white"></div>
+                                        </div>
+                                        <span className="text-gray-700 text-xs group-hover:text-gray-900 font-medium">Scheduled (Set a date)</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 cursor-pointer group">
+                                        <div className="relative flex items-center">
+                                            <input type="radio" name="visibility" className="peer sr-only" />
+                                            <div className="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:border-blue-600 peer-checked:border-4 transition-all bg-white"></div>
+                                        </div>
+                                        <span className="text-gray-700 text-xs group-hover:text-gray-900 font-medium">Private</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div className="pt-2 flex justify-end">
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                        >
-                            {saving ? (
-                                <>
-                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                    Saving...
-                                </>
-                            ) : (
-                                <>
-                                    <Save className="w-4 h-4" />
-                                    Update Post
-                                </>
-                            )}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     );
 }

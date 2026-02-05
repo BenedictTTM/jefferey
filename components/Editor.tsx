@@ -30,7 +30,7 @@ const formats = [
 
 export default function Editor({ value, onChange }: EditorProps) {
     return (
-        <div className="bg-white">
+        <div className="bg-white [&_.ql-editor]:text-gray-900">
             <ReactQuill
                 theme="snow"
                 value={value}
