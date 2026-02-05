@@ -57,7 +57,7 @@ export default function SplitHero() {
                 {/* Main Text Content */}
                 <div className="relative z-10 flex flex-col gap-6">
                     <motion.div variants={itemVariants} className="flex items-center gap-3">
-                       
+
                         <span className="h-px w-10 bg-gray-400"></span>
                         <span className="text-gray-500 font-medium uppercase text-xs tracking-widest">
                             Est. 2026
@@ -122,7 +122,7 @@ export default function SplitHero() {
 
 
                 {/* Navigation (Desktop) */}
-                <nav className="absolute top-0 right-0 w-full p-8 lg:p-12 hidden lg:flex justify-end gap-8 z-30">
+                <nav className="absolute top-0 right-0 w-full p-8 lg:p-12 hidden lg:flex justify-center gap-8 z-30">
                     {["About Me", "Skills", "Research", "Portfolio"].map((item) => (
                         <Link key={item} href={`#${item.toLowerCase().replace(" ", "")}`} className="text-gray-500 hover:text-gray-900 text-xs font-bold uppercase tracking-widest transition-colors relative group">
                             {item}
