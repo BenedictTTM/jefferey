@@ -1,25 +1,23 @@
 import type { Metadata } from "next";
-import { Inter, Mrs_Saint_Delafield, Poppins } from "next/font/google";
+import { Inter, Playfair_Display, Montserrat } from "next/font/google"; // Removed Mrs_Saint_Delafield as it's not in the new design specs
 import "./globals.css";
+import TopBar from "@/components/TopBar";
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-inter",
   display: 'swap',
 });
 
-const poppins = Poppins({
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-poppins",
+  variable: "--font-playfair",
   display: 'swap',
 });
 
-const mrsSaintDelafield = Mrs_Saint_Delafield({
-  weight: "400",
+const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-mrs-saint-delafield",
+  variable: "--font-montserrat",
   display: 'swap',
 });
 
@@ -43,8 +41,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${poppins.variable} ${mrsSaintDelafield.variable} font-sans antialiased bg-[var(--color-mba-background)] text-[var(--color-mba-text-primary)] overflow-x-hidden`}
+        className={`${inter.variable} ${playfair.variable} ${montserrat.variable} font-sans antialiased bg-[var(--color-mba-background)] text-[var(--color-mba-text-primary)] overflow-x-hidden`}
       >
+        <TopBar />
         {children}
       </body>
     </html>

@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Github, Linkedin, Mail, ArrowRight, Activity, Dna, FlaskConical } from "lucide-react"; // Added biomed icons
-import { motion } from "framer-motion";
+import { Github, Linkedin, Mail, ArrowRight, Activity, Dna } from "lucide-react";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import TopBar from "./TopBar";
 
 export default function SplitHero() {
     // Animation Variants
@@ -31,83 +32,109 @@ export default function SplitHero() {
         },
     };
 
+
+    // 3D Tilt Logic
+    const initialX = -0.3; // Corresponds to ~ -15deg rotateY
+    const initialY = -0.125; // Corresponds to ~ 5deg rotateX
+
+    const x = useMotionValue(initialX);
+    const y = useMotionValue(initialY);
+
+    const mouseX = useSpring(x, { stiffness: 150, damping: 15 });
+    const mouseY = useSpring(y, { stiffness: 150, damping: 15 });
+
+    const rotateX = useTransform(mouseY, [-0.5, 0.5], [20, -20]); // Increased range
+    const rotateY = useTransform(mouseX, [-0.5, 0.5], [-25, 25]); // Increased range
+
+    // Shine effect
+    const shineX = useTransform(mouseX, [-0.5, 0.5], ["0%", "100%"]);
+    const shineY = useTransform(mouseY, [-0.5, 0.5], ["0%", "100%"]);
+
+    function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        const mouseXFromCenter = e.clientX - rect.left - width / 2;
+        const mouseYFromCenter = e.clientY - rect.top - height / 2;
+
+        x.set(mouseXFromCenter / width);
+        y.set(mouseYFromCenter / height);
+    }
+
+    function handleMouseLeave() {
+        x.set(initialX);
+        y.set(initialY);
+    }
+
     return (
-        <div className="relative w-full min-h-screen flex flex-col lg:flex-row overflow-hidden bg-[#F0F2F5]">
+        <div className="relative w-full min-h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden bg-[var(--color-mba-background)] text-[var(--color-mba-text-primary)]">
+
+            {/* --- Background Image & Effects --- */}
+            <div className="absolute inset-0 z-0 select-none pointer-events-none">
+                {/* Tech Grid Overlay (Subtle) - Adapted for Light Mode */}
+                <div className="absolute inset-0 z-0 opacity-[0.03]">
+                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#000000_1px,transparent_1px)] bg-[size:60px_100%]"></div>
+                    <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#000000_1px,transparent_1px)] bg-[size:100%_60px]"></div>
+                </div>
+
+                {/* Clean vignette */}
+                <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-white/80"></div>
+            </div>
 
             {/* --- Left Content (Info) --- */}
             <motion.div
-                className="w-full lg:w-[45%] xl:w-[50%] relative z-20 flex flex-col justify-center px-8 md:px-16 lg:px-24 py-20 lg:py-0"
+                className="relative z-10 flex flex-col justify-center px-8 md:px-16 lg:px-24 py-32 lg:py-32 order-2 lg:order-1"
                 initial="hidden"
                 animate="visible"
                 viewport={{ once: true }}
                 variants={containerVariants}
             >
-                {/* Decorative Background Elements on Left */}
-                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
-                    <div className="absolute top-10 left-10 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-                    <div className="absolute top-10 right-10 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-                    <div className="absolute -bottom-32 left-20 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
-                </div>
-
                 {/* Header / Logo Area */}
-                <motion.div variants={itemVariants} className="absolute top-8 left-8 lg:top-12 lg:left-12 flex items-center gap-2">
-                    <span className="font-bold text-xl tracking-tighter text-gray-900 border-2 border-gray-900 w-12 h-12 flex items-center justify-center">JD</span>
+                <motion.div variants={itemVariants} className="absolute top-32 left-8 lg:top-12 lg:left-12 flex items-center gap-4 hidden lg:flex">
+                    {/* Hidden on mobile to avoid clash with nav */}
                 </motion.div>
 
                 {/* Main Text Content */}
-                <div className="relative z-10 flex flex-col gap-6">
-                    <motion.div variants={itemVariants} className="flex items-center gap-3">
-
-                        <span className="h-px w-10 bg-gray-400"></span>
-                        <span className="text-gray-500 font-medium uppercase text-xs tracking-widest">
-                            Est. 2026
-                        </span>
-                    </motion.div>
-
-                    <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl xl:text-8xl font-black text-gray-900 leading-[0.9] tracking-tighter">
-                        Jeffrey <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600">
+                <div className="flex flex-col gap-8 mt-12 lg:mt-0">
+                    <motion.h1 variants={itemVariants} className="font-serif font-bold leading-[1.1] tracking-tight text-[var(--color-mba-text-primary)]">
+                        <span className="block text-6xl md:text-7xl xl:text-8xl">Jeffrey</span>
+                        <span className="block text-6xl md:text-7xl xl:text-8xl text-[var(--color-mba-text-primary)]">
                             M. Drai
                         </span>
                     </motion.h1>
 
-                    <motion.div variants={itemVariants} className="flex flex-col gap-2 mt-2">
-                        <h2 className="text-xl md:text-2xl font-medium text-gray-600 flex items-center gap-3">
-                            <Dna className="text-blue-600" size={24} />
+                    <motion.div variants={itemVariants} className="flex flex-col gap-3 font-sans">
+                        <h2 className="text-xl md:text-2xl font-semibold text-[var(--color-mba-gold)] flex items-center gap-3 uppercase tracking-wider">
+                            <Dna className="text-[var(--color-mba-gold)]" size={24} />
                             Biomedical Engineer
                         </h2>
-                        <h2 className="text-xl md:text-2xl font-medium text-gray-600 flex items-center gap-3">
-                            <Activity className="text-emerald-600" size={24} />
+                        <h2 className="text-xl md:text-2xl font-semibold text-[var(--color-mba-gold)] flex items-center gap-3 uppercase tracking-wider">
+                            <Activity className="text-[var(--color-mba-gold)]" size={24} />
                             STEM Researcher
                         </h2>
                     </motion.div>
 
-                    <motion.p variants={itemVariants} className="max-w-md text-gray-600 text-base md:text-base leading-relaxed mt-4 border-l-2 border-gray-300 pl-4">
+                    <motion.p variants={itemVariants} className="max-w-2xl text-[var(--color-mba-text-grey)] text-lg leading-relaxed border-l-[3px] border-[var(--color-mba-gold)] pl-6 font-medium font-sans">
                         Bridging the gap between biological systems and engineering solutions.
                         Dedicated to advancing healthcare technology through innovative research.
                     </motion.p>
 
                     {/* CTA & Socials */}
-                    <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-6 mt-8">
-                        <Link href="#contact" className="group relative px-8 py-3 bg-gray-900 text-white font-semibold rounded-none overflow-hidden hover:pr-10 transition-all duration-300">
+                    <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-6 mt-6">
+                        <Link href="#contact" className="group relative px-8 py-4 bg-[var(--color-mba-navy)] text-white font-bold rounded-lg overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
                             <span className="relative z-10 flex items-center gap-2">
                                 Start a Conversation <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
                             </span>
-                            <div className="absolute inset-0 bg-gray-800 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
                         </Link>
 
                         <div className="flex gap-4">
-                            {[
-                                { Icon: Github, href: "#" },
-                                { Icon: Linkedin, href: "#" },
-                                { Icon: Mail, href: "#" }
-                            ].map(({ Icon, href }, index) => (
+                            {[Github, Linkedin, Mail].map((Icon, index) => (
                                 <a
                                     key={index}
-                                    href={href}
-                                    className="w-10 h-10 border border-gray-300 rounded-full flex items-center justify-center text-gray-600 hover:border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300"
+                                    href="#"
+                                    className="w-12 h-12 border border-[var(--color-mba-gold)] rounded-full flex items-center justify-center text-[var(--color-mba-gold)] hover:bg-[var(--color-mba-gold)] hover:text-white transition-all duration-300"
                                 >
-                                    <Icon size={18} />
+                                    <Icon size={20} />
                                 </a>
                             ))}
                         </div>
@@ -115,58 +142,70 @@ export default function SplitHero() {
                 </div>
             </motion.div>
 
-            {/* --- Right Content (Image & Visuals) --- */}
-            <div className="relative w-full lg:w-[55%] xl:w-[50%] overflow-hidden min-h-[500px] lg:min-h-screen">
+            {/* --- Right Content (Interactive Slanted Card) --- */}
+            <div className="relative w-full h-[600px] lg:h-auto flex items-center justify-center perspective-[1200px] order-1 lg:order-2"
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+            >
+
+                {/* 3D Container - Action Figure Box */}
+                <motion.div
+                    style={{
+                        rotateX,
+                        rotateY,
+                        transformStyle: "preserve-3d",
+                    }}
+                    initial={{ scale: 0.9, rotateY: -15, rotateX: 5 }} // Default slanted position
+                    animate={{ scale: 1 }}
+                    className="relative w-[340px] h-[520px] md:w-[400px] md:h-[600px] cursor-pointer"
+                >
+                    {/* --- THE CARD AESTHETIC (Blister Pack - Light Version) --- */}
+
+                    {/* The "Bubble" / Main Card */}
+                    <div className="absolute inset-0 rounded-[2.5rem] border border-gray-200 bg-gradient-to-br from-white to-gray-50 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.05)] z-10 flex items-center justify-center overflow-hidden">
+
+                        {/* Card Label / Branding Top */}
+                        <div className="absolute top-6 left-0 w-full flex flex-col items-center z-20">
+                            <h3 className="font-sans font-black text-2xl tracking-[0.2em] text-[var(--color-mba-text-primary)] opacity-80 uppercase">STEM PRO</h3>
+                            <span className="text-[10px] tracking-widest text-[var(--color-mba-gold)] font-bold uppercase mt-1">Action Figure Series</span>
+                        </div>
 
 
-
-
-                {/* Navigation (Desktop) */}
-                <nav className="absolute top-0 right-0 w-full p-8 lg:p-12 hidden lg:flex justify-center gap-8 z-30">
-                    {["About Me", "Skills", "Research", "Portfolio"].map((item) => (
-                        <Link key={item} href={`#${item.toLowerCase().replace(" ", "")}`} className="text-gray-500 hover:text-gray-900 text-xs font-bold uppercase tracking-widest transition-colors relative group">
-                            {item}
-                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
-                        </Link>
-                    ))}
-                </nav>
-
-                {/* Image Container with Diagonal Slice Effect */}
-                <div className="absolute inset-0 z-10 flex items-center justify-center">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{
-                            opacity: 1,
-                            scale: 1,
-                            y: [0, -20, 0] // Floating animation
-                        }}
-                        transition={{
-                            duration: 0.8,
-                            ease: "easeOut",
-                            y: {
-                                duration: 10,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                                repeatType: "mirror"
-                            }
-                        }}
-                        className="relative w-[260px] h-[350px] md:w-[300px] md:h-[400px] lg:w-[340px] lg:h-[440px] flex items-center justify-center mt-20"
-                    >
-                        {/* Glowing backdrop behind image */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-amber-500/20 blur-[60px] rounded-full"></div>
-
-                        <Image
-                            src="/dry.png"
-                            alt="Jeffrey Mawusi Drai - Biomedical Engineer"
-                            fill
-                            className="object-cover rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.3)] border border-white/10"
-                            priority
-                            sizes="(max-width: 768px) 100vw, 400px"
+                        {/* Plastic Shine/Reflection (Dynamic) */}
+                        <motion.div
+                            style={{
+                                background: `radial-gradient(circle at ${shineX} ${shineY}, rgba(255,255,255,0.8) 0%, transparent 60%)`
+                            }}
+                            className="absolute inset-0 opacity-60 pointer-events-none mix-blend-soft-light z-30"
                         />
 
+                        {/* Checkered Floor/Platform inside bubble (lighter) */}
+                        <div className="absolute bottom-0 w-full h-16 bg-gray-100/50 skew-x-12 opacity-80 border-t border-gray-100"></div>
 
-                    </motion.div>
-                </div>
+                        {/* The Action Figure (Image) */}
+                        <motion.div
+                            animate={{ y: [0, -5, 0] }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                            className="relative w-full h-full flex items-end justify-center pb-8"
+                        >
+                            <Image
+                                src="/dry.png"
+                                alt="Jeffrey Mawusi Drai Figure"
+                                width={500}
+                                height={800}
+                                className="object-contain h-[85%] w-auto drop-shadow-[0_20px_20px_rgba(0,0,0,0.15)] z-20"
+                                priority
+                            />
+                        </motion.div>
+
+                        {/* Card Label / Branding Bottom */}
+                        <div className="absolute bottom-8 left-0 w-full flex flex-col items-center z-20">
+                            <div className="bg-[var(--color-mba-gold)] text-white px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase shadow-md">
+                                Jeffrey M. Drai
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
         </div>
     );

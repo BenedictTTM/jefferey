@@ -1,39 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  /* MBA Color Palette - Dark Mode Scheme */
-  --color-mba-background: #0F1115;
-  /* Deep dark background */
-  --color-mba-surface: #181A1F;
-  /* Slightly lighter surface */
-  --color-mba-border: #245F73;
-  /* Teal border for subtle contrast */
+  /* CLEAN LUXURY - Premium Light Theme */
+  --color-mba-background: #F9FAFB;
+  /* Off-white/Light Gray */
+  --color-mba-surface: #FFFFFF;
+  /* Pure White */
+  --color-mba-border: #E5E7EB;
+  /* Soft Gray Border */
   --color-mba-white: #FFFFFF;
   --color-mba-black: #000000;
 
-  /* Text Colors mapped from Palette */
-  --color-mba-text-primary: #F2F0EF;
-  /* Off-white from palette */
-  --color-mba-text-grey: #BBBDBC;
-  /* Grey from palette */
+  /* Text Colors */
+  --color-mba-text-primary: #1F2937;
+  /* Dark Navy/Charcoal */
+  --color-mba-text-grey: #4B5563;
+  /* Slate Gray */
 
-  /* Accents mapped from Palette */
-  --color-mba-blue: #733E24;
-  /* Brown/Burnt Orange */
-  --color-mba-blue-hover: #245F73;
-  /* Teal/Dark Blue-Green */
-  --color-mba-blue-glow: rgba(115, 62, 36, 0.3);
-  /* Brown glow */
+  /* Accents */
+  --color-mba-gold: #C5A059;
+  /* Premium Metallic Gold */
+  --color-mba-navy: #263548;
+  /* Deep Navy (CTA) */
 
   /* Transitions */
-  --transition-base: 0.3s linear;
+  --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@theme {
-  /* Typography */
-  --font-sans: var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-display: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
+/* Fonts are defined in layout.tsx and available as variables */
 
 @layer base {
   * {
@@ -65,7 +59,7 @@
 
   /* Selection */
   ::selection {
-    background: var(--color-mba-blue);
+    background: var(--color-mba-gold);
     color: var(--color-mba-white);
   }
 
