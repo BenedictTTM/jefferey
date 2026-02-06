@@ -30,6 +30,7 @@ export async function POST(request: Request) {
     const title = formData.get('title') as string;
     const excerpt = formData.get('excerpt') as string;
     const content = formData.get('content') as string;
+    const category = (formData.get('category') as string) || 'Uncategorized';
     const image = formData.get('image') as File | null;
     const readTime = (formData.get('readTime') as string) || '5 min';
 
@@ -61,6 +62,7 @@ export async function POST(request: Request) {
         title,
         excerpt,
         content,
+        category,
         image: imageUrl,
         readTime,
       },

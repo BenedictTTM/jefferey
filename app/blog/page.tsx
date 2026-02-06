@@ -2,9 +2,23 @@
 import Footer from "@/components/Footer";
 import BlogCard from "@/components/BlogCard";
 import BlogRow from "@/components/BlogRow";
-import { blogPosts } from "@/lib/blog-data";
+import { prisma } from '@/lib/prisma';
 
-export default function BlogPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function BlogPage() {
+    const posts = await prisma.post.findMany({
+        orderBy: {
+            date: 'desc',
+        },
+    });
+
+    // Map Prisma Post to BlogPost (ensure category exists)
+    const blogPosts = posts.map(post => ({
+        ...post,
+        category: post.category || 'Uncategorized',
+        date: post.date.toISOString(),
+    }));
     return (
         <>
             <main className="min-h-screen bg-[var(--color-mba-background)] pt-32 pb-24">

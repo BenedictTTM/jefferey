@@ -2,15 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ThumbsUp, MessageSquare, Share2 } from "lucide-react";
 
-interface BlogPost {
-    id: string;
-    title: string;
-    excerpt: string;
-    date: string;
-    category?: string;
-    image: string;
-    readTime: string;
-}
+import { BlogPost } from "@/types/blog";
 
 interface BlogCardProps {
     post: BlogPost;
@@ -44,7 +36,7 @@ export default function BlogCard({ post }: BlogCardProps) {
                 </p>
 
                 <div className="text-[0.75rem] text-gray-400 mb-6 font-medium">
-                    <time dateTime={post.date}>
+                    <time dateTime={new Date(post.date).toISOString()}>
                         {new Date(post.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </time>
                 </div>

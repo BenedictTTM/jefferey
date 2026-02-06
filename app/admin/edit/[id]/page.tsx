@@ -10,12 +10,13 @@ import Editor from '@/components/Editor';
 
 import { postSchema } from '@/lib/schemas';
 import { z } from 'zod';
+import { useMutation } from '@tanstack/react-query';
 
 export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
     const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
+
     const [post, setPost] = useState<any>(null);
     const [content, setContent] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -57,9 +58,31 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
         }
     };
 
+    const updatePostMutation = useMutation({
+        mutationFn: async (formData: FormData) => {
+            const response = await fetch(`/api/posts/${id}`, {
+                method: 'PUT',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to update post');
+            }
+
+            return response.json();
+        },
+        onSuccess: () => {
+            router.push('/admin');
+        },
+        onError: (error: Error) => {
+            console.error('Error updating post:', error);
+            alert(error.message);
+        },
+    });
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setSaving(true);
         setErrors({});
 
         const formData = new FormData(e.currentTarget);
@@ -70,6 +93,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             excerpt: formData.get('excerpt'),
             content: content,
             readTime: formData.get('readTime'),
+            category: formData.get('category'),
             // Only include image if a new file is uploaded
             ...(imageFile && imageFile.size > 0 ? { image: imageFile } : {}),
         };
@@ -82,30 +106,11 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                 formattedErrors[issue.path[0] as string] = issue.message;
             });
             setErrors(formattedErrors);
-            setSaving(false);
             return;
         }
 
         formData.set('content', content);
-
-        try {
-            const response = await fetch(`/api/posts/${id}`, {
-                method: 'PUT',
-                body: formData,
-            });
-
-            if (response.ok) {
-                router.push('/admin');
-            } else {
-                const data = await response.json();
-                alert(data.error || 'Failed to update post');
-            }
-        } catch (error) {
-            console.error('Error updating post:', error);
-            alert('Error updating post');
-        } finally {
-            setSaving(false);
-        }
+        updatePostMutation.mutate(formData);
     };
 
     if (loading) {
@@ -143,13 +148,13 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                             </button>
                             <button
                                 type="submit"
-                                disabled={saving}
+                                disabled={updatePostMutation.isPending}
                                 className="px-5 py-2.5 rounded-xl bg-[#263548] text-white font-medium hover:bg-[#1f2b3b] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2 shadow-sm"
                             >
-                                {saving && (
+                                {updatePostMutation.isPending && (
                                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                 )}
-                                {saving ? 'Saving...' : 'Update Post'}
+                                {updatePostMutation.isPending ? 'Saving...' : 'Update Post'}
                             </button>
                         </div>
                     </div>
@@ -281,10 +286,14 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                                     Category
                                 </label>
                                 <div className="relative">
-                                    <select className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E5E5E5] rounded-md focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] outline-none transition-all text-gray-900 text-sm appearance-none cursor-pointer">
-                                        <option>News</option>
-                                        <option>Tutorial</option>
-                                        <option>Article</option>
+                                    <select name="category" defaultValue={post.category} className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E5E5E5] rounded-md focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] outline-none transition-all text-gray-900 text-sm appearance-none cursor-pointer">
+                                        <option value="Uncategorized">Select a category</option>
+                                        <option value="Research">Research</option>
+                                        <option value="Mentorship">Mentorship</option>
+                                        <option value="Bioinformatics">Bioinformatics</option>
+                                        <option value="Engineering">Engineering</option>
+                                        <option value="AI & Health">AI & Health</option>
+                                        <option value="Community">Community</option>
                                     </select>
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>

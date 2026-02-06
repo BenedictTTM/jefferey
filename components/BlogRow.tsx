@@ -2,15 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
-interface BlogPost {
-    id: string;
-    title: string;
-    excerpt: string;
-    date: string;
-    category?: string;
-    image: string;
-    readTime: string;
-}
+import { BlogPost } from "@/types/blog";
 
 interface BlogRowProps {
     post: BlogPost;
@@ -44,7 +36,7 @@ export default function BlogRow({ post }: BlogRowProps) {
                 </h3>
 
                 <div className="text-[0.65rem] text-gray-400 mt-auto font-medium lowercase">
-                    <time dateTime={post.date}>
+                    <time dateTime={new Date(post.date).toISOString()}>
                         {new Date(post.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </time>
                 </div>

@@ -5,6 +5,7 @@ export const postSchema = z.object({
     excerpt: z.string().min(1, 'Excerpt is required'),
     content: z.string().min(1, 'Content is required'),
     readTime: z.string().optional(),
+    category: z.string().optional().default('Uncategorized'),
     image: z.any()
         .refine((file) => file?.size > 0 || file instanceof File, "Image is required")
         .optional(),

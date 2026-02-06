@@ -1,62 +1,68 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Plus, Edit, Trash2, ArrowLeft } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 
 interface Post {
     id: string;
     title: string;
     date: string;
     image?: string;
+    excerpt?: string;
 }
 
 export default function AdminPage() {
-    const [posts, setPosts] = useState<Post[]>([]);
-    const [loading, setLoading] = useState(true);
-    const router = useRouter();
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        fetchPosts();
-    }, []);
-
-    const fetchPosts = async () => {
-        try {
+    const { data: posts = [], isLoading, isError, error } = useQuery<Post[]>({
+        queryKey: ['posts'],
+        queryFn: async () => {
             const response = await fetch('/api/posts');
-            const data = await response.json();
-            setPosts(data);
-        } catch (error) {
-            console.error('Error fetching posts:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+            return response.json();
+        },
+    });
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this post?')) return;
-
-        try {
+    const deletePostMutation = useMutation({
+        mutationFn: async (id: string) => {
             const response = await fetch(`/api/posts/${id}`, {
                 method: 'DELETE',
             });
-
-            if (response.ok) {
-                setPosts(posts.filter((post) => post.id !== id));
-            } else {
-                alert('Failed to delete post');
+            if (!response.ok) {
+                throw new Error('Failed to delete post');
             }
-        } catch (error) {
+            return response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['posts'] });
+        },
+        onError: (error) => {
             console.error('Error deleting post:', error);
-            alert('Error deleting post');
-        }
+            alert('Failed to delete post');
+        },
+    });
+
+    const handleDelete = (id: string) => {
+        if (!confirm('Are you sure you want to delete this post?')) return;
+        deletePostMutation.mutate(id);
     };
 
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C5A059]"></div>
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
+                <div className="text-red-500 font-medium">Error loading posts: {error.message}</div>
             </div>
         );
     }
@@ -68,7 +74,6 @@ export default function AdminPage() {
                 <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
                     <div className="flex items-center gap-4">
                         {/* Navigation Buttons */}
-
                     </div>
                 </div>
 
@@ -117,6 +122,11 @@ export default function AdminPage() {
                                         <h3 className="font-serif text-lg text-[#1F2937] font-medium group-hover:text-[#C5A059] transition-colors line-clamp-2">
                                             {post.title}
                                         </h3>
+                                        {post.excerpt && (
+                                            <p className="text-xs text-gray-400 line-clamp-1 mt-1 font-sans">
+                                                {post.excerpt}
+                                            </p>
+                                        )}
                                     </td>
                                     <td className="p-6 text-sm text-[#4B5563] font-medium">
                                         {new Date(post.date).toLocaleDateString('en-GB', {
@@ -136,6 +146,7 @@ export default function AdminPage() {
                                             <button
                                                 onClick={() => handleDelete(post.id)}
                                                 className="p-2 text-[#C5A059] hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                disabled={deletePostMutation.isPending}
                                             >
                                                 <Trash2 className="w-5 h-5" />
                                             </button>

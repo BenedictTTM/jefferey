@@ -17,4 +17,5 @@ model Post {
 
   image     String
   readTime  String   @default("5 min")
+  category  String   @default("Uncategorized")
 }

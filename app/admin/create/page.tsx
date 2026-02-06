@@ -1,5 +1,7 @@
 'use client';
 
+import { useMutation } from '@tanstack/react-query';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -12,7 +14,7 @@ import { z } from 'zod';
 
 export default function CreatePostPage() {
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+
     const [content, setContent] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -30,9 +32,31 @@ export default function CreatePostPage() {
         }
     };
 
+    const createPostMutation = useMutation({
+        mutationFn: async (formData: FormData) => {
+            const response = await fetch('/api/posts', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to create post');
+            }
+
+            return response.json();
+        },
+        onSuccess: () => {
+            router.push('/admin');
+        },
+        onError: (error: Error) => {
+            console.error('Error creating post:', error);
+            alert(error.message);
+        },
+    });
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true);
         setErrors({});
 
         const formData = new FormData(e.currentTarget);
@@ -41,6 +65,7 @@ export default function CreatePostPage() {
             excerpt: formData.get('excerpt'),
             content: content,
             readTime: formData.get('readTime'),
+            category: formData.get('category'),
             image: formData.get('image'),
         };
 
@@ -52,76 +77,40 @@ export default function CreatePostPage() {
                 formattedErrors[issue.path[0] as string] = issue.message;
             });
             setErrors(formattedErrors);
-            setLoading(false);
             return;
         }
 
         formData.set('content', content);
-
-        try {
-            const response = await fetch('/api/posts', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok) {
-                router.push('/admin');
-            } else {
-                const data = await response.json();
-                alert(data.error || 'Failed to create post');
-            }
-        } catch (error) {
-            console.error('Error creating post:', error);
-            alert('Error creating post');
-        } finally {
-            setLoading(false);
-        }
+        createPostMutation.mutate(formData);
     };
 
     return (
-        <div className="min-h-screen bg-[#F9FAFB] pb-12">
+        <div className="min-h-screen bg-[#F9FAFB] pb-6">
             <form onSubmit={handleSubmit}>
-                {/* Top Navigation Bar */}
-                <div className="bg-white border-b border-gray-100 sticky top-0 z-20">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-                        {/* Left: Breadcrumbs/Title */}
-                        <div className="flex items-center gap-4">
-                            <Link href="/admin" className="text-gray-400 hover:text-gray-600 transition-colors">
-                                <ArrowLeft className="w-5 h-5" />
-                            </Link>
-                            <div>
-                                <h1 className="text-2xl font-serif font-bold text-gray-900">Create New Post</h1>
-                            </div>
-                        </div>
-
-                        {/* Right: Actions */}
-                        <div className="flex items-center gap-3">
-                            <button
-                                type="button"
-                                className="px-5 py-2.5 rounded-lg border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm"
-                            >
-                                Save Draft
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="px-5 py-2.5 rounded-lg bg-[#263548] text-white font-medium hover:bg-[#1f2b3b] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2 shadow-sm"
-                            >
-                                {loading && (
-                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                )}
-                                {loading ? 'Creating...' : 'Create Post'}
-                            </button>
-                        </div>
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div className="flex items-center justify-end gap-3 mb-6">
+                        <button
+                            type="button"
+                            className="px-5 py-2.5 rounded-lg border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm"
+                        >
+                            Save Draft
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={createPostMutation.isPending}
+                            className="px-5 py-2.5 rounded-lg bg-[#263548] text-white font-medium hover:bg-[#1f2b3b] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2 shadow-sm"
+                        >
+                            {createPostMutation.isPending && (
+                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            )}
+                            {createPostMutation.isPending ? 'Creating...' : 'Create Post'}
+                        </button>
                     </div>
-                </div>
-
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Main Content - Left Column */}
                         <div className="lg:col-span-2">
-                            <div className="bg-[#FAF9F6] border border-[#E5E5E5] rounded-xl p-8 shadow-sm">
-                                <h2 className="text-2xl font-serif font-bold text-[#1F2937] mb-6">Post Details</h2>
+                            <div className="bg-[#FAF9F6] border border-[#E5E5E5] rounded-xl p-6 shadow-sm">
+                                <h2 className="text-2xl  font-bold text-[#1F2937] mb-6">Post Details</h2>
 
                                 <div className="space-y-6">
                                     <div className="space-y-2">
@@ -132,7 +121,7 @@ export default function CreatePostPage() {
                                             type="text"
                                             name="title"
                                             id="title"
-                                            className={`w-full px-4 py-3 bg-[#FAF9F6] border rounded-lg focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] outline-none transition-all text-gray-900 placeholder-gray-400 text-lg font-serif ${errors.title ? 'border-red-500' : 'border-[#E5E5E5]'
+                                            className={`w-full px-4 py-3 bg-[#FAF9F6] border rounded-lg focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] outline-none transition-all text-gray-900 placeholder-gray-400 text-lg  ${errors.title ? 'border-red-500' : 'border-[#E5E5E5]'
                                                 }`}
                                             placeholder="Enter a catchy title..."
                                         />
@@ -168,7 +157,7 @@ export default function CreatePostPage() {
                         </div>
 
                         {/* Sidebar - Right Column */}
-                        <div className="space-y-8">
+                        <div className="space-y-6">
                             <h3 className="text-lg font-bold text-gray-900 mb-4">Post Settings</h3>
 
                             {/* Featured Image */}
@@ -242,10 +231,14 @@ export default function CreatePostPage() {
                                     Category
                                 </label>
                                 <div className="relative">
-                                    <select className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E5E5E5] rounded-xl focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] outline-none transition-all text-gray-900 text-sm appearance-none cursor-pointer">
-                                        <option>News</option>
-                                        <option>Tutorial</option>
-                                        <option>Article</option>
+                                    <select name="category" className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E5E5E5] rounded-xl focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] outline-none transition-all text-gray-900 text-sm appearance-none cursor-pointer">
+                                        <option value="Uncategorized">Select a category</option>
+                                        <option value="Research">Research</option>
+                                        <option value="Mentorship">Mentorship</option>
+                                        <option value="Bioinformatics">Bioinformatics</option>
+                                        <option value="Engineering">Engineering</option>
+                                        <option value="AI & Health">AI & Health</option>
+                                        <option value="Community">Community</option>
                                     </select>
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
