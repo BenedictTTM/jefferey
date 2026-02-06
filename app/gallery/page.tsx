@@ -1,6 +1,4 @@
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import GalleryGrid from "@/components/GalleryGrid";
 
 const galleryImages = [
     {
@@ -53,7 +51,6 @@ const galleryImages = [
 export default function GalleryPage() {
     return (
         <>
-            <Navbar />
             <main className="min-h-screen bg-[var(--color-mba-background)] pt-20">
                 <div className="section-padding">
                     <div className="max-w-7xl mx-auto">

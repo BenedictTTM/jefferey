@@ -1,57 +1,34 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 import BlogCard from "./BlogCard";
 
+import { blogPosts } from "@/lib/blog-data";
+
 export default function Blog() {
-    const blogPosts = [
-        {
-            id: "1",
-            title: "Advancing 3D Bioprinting in Africa",
-            excerpt: "Exploring the potential of low-cost 3D bioprinting technologies to revolutionize healthcare and research across the continent.",
-            date: "2024-03-15",
-            category: "Research",
-            image: "/dry.png", // Using existing image
-            readTime: "5 min",
-        },
-        {
-            id: "2",
-            title: "Mentoring the Next Generation of Engineers",
-            excerpt: "Reflections on leading the Umoja Robotics team and the importance of STEM mentorship for high school students.",
-            date: "2024-02-10",
-            category: "Mentorship",
-            image: "/mba-headshot.jpg", // Using existing image
-            readTime: "4 min",
-        },
-        {
-            id: "3",
-            title: "The Future of Bacterial Genome Analysis",
-            excerpt: "Key takeaways from the Wellcome Connecting Science certification and how data science is shaping bioinformatics.",
-            date: "2024-01-20",
-            category: "Bioinformatics",
-            image: "/citations.jpeg", // Using existing image
-            readTime: "6 min",
-        },
-    ];
+    const [visibleCount, setVisibleCount] = useState(2);
+
+    const visiblePosts = blogPosts.slice(0, visibleCount);
+
+    const handleLoadMore = () => {
+        setVisibleCount((prev) => prev + 2);
+    };
 
     return (
         <section className="py-24 px-6 md:px-12 bg-[var(--color-mba-background)]" id="blog">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-3xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="mb-16"
+                    className="mb-16 text-center"
                 >
-                    <h2 className="text-4xl md:text-5xl font-light text-white mb-4">Latest Insights</h2>
-                    <div className="h-1 w-24 bg-[var(--color-mba-border)]"></div>
-                    <p className="mt-6 text-[var(--color-mba-text-grey)] max-w-2xl text-lg">
-                        Thoughts on bioengineering, leadership, and the future of STEM education in Africa.
-                    </p>
+                    <h2 className="text-3xl md:text-5xl font-bold text-[var(--color-mba-text-primary)] mb-4 font-[family-name:var(--font-oswald)] uppercase tracking-tight">Explore our Blog & Articles</h2>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {blogPosts.map((post, index) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 mb-12">
+                    {visiblePosts.map((post, index) => (
                         <motion.div
                             key={post.id}
                             initial={{ opacity: 0, y: 20 }}
@@ -63,6 +40,17 @@ export default function Blog() {
                         </motion.div>
                     ))}
                 </div>
+
+                {visibleCount < blogPosts.length && (
+                    <div className="flex justify-center">
+                        <button
+                            onClick={handleLoadMore}
+                            className="px-8 py-3 text-sm font-semibold text-[var(--color-mba-text-primary)] border border-[var(--color-mba-border)] rounded-full hover:bg-[var(--color-mba-gold)] hover:text-white hover:border-transparent transition-all duration-300 uppercase tracking-widest"
+                        >
+                            Load More Articles
+                        </button>
+                    </div>
+                )}
             </div>
         </section>
     );

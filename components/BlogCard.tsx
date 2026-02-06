@@ -1,12 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ArrowRight, ThumbsUp, MessageSquare, Share2 } from "lucide-react";
 
 interface BlogPost {
     id: string;
     title: string;
     excerpt: string;
     date: string;
-
+    category?: string;
     image: string;
     readTime: string;
 }
@@ -17,45 +18,57 @@ interface BlogCardProps {
 
 export default function BlogCard({ post }: BlogCardProps) {
     return (
-        <article className="bg-[var(--color-mba-surface)] border border-[var(--color-mba-border)] hover:border-[var(--color-mba-blue)] transition-smooth group">
-            <div className="flex flex-col md:flex-row">
-                {/* Featured Image */}
-                <div className="relative w-full md:w-1/3 h-64 md:h-auto overflow-hidden">
-                    <Image
-                        src={post.image}
-                        alt={post.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-all duration-500"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        loading="lazy"
-                    />
+        <article className="group flex flex-col h-full bg-transparent">
+            {/* Featured Image */}
+            <div className="relative w-full aspect-[16/10] overflow-hidden rounded-lg mb-6">
+                <Image
+                    src={post.image}
+                    alt={post.title}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 400px"
+                    loading="lazy"
+                />
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col flex-1 px-1">
+                <h2 className="text-[1.75rem] leading-[1.1] font-bold text-[var(--color-mba-text-primary)] mb-4 font-[family-name:var(--font-oswald)] uppercase tracking-tight group-hover:text-[var(--color-mba-gold)] transition-colors duration-300">
+                    <Link href={`/blog/${post.id}`}>
+                        {post.title}
+                    </Link>
+                </h2>
+
+                <p className="text-[0.925rem] text-[var(--color-mba-text-grey)] leading-[1.7] mb-3 font-light line-clamp-3">
+                    {post.excerpt}
+                </p>
+
+                <div className="text-[0.75rem] text-gray-400 mb-6 font-medium">
+                    <time dateTime={post.date}>
+                        {new Date(post.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </time>
                 </div>
 
-                {/* Content */}
-                <div className="flex-1 p-8">
-                    <div className="flex items-center gap-4 mb-4 text-sm text-[var(--color-mba-text-grey)] flex-wrap">
-
-                        <time dateTime={post.date} className="whitespace-nowrap">{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</time>
-                        <span>•</span>
-                        <span className="whitespace-nowrap">{post.readTime} read</span>
-                    </div>
-
-                    <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-mba-text-primary)] mb-4 group-hover:text-[var(--color-mba-blue)] transition-smooth">
-                        <Link href={`/blog/${post.id}`}>
-                            {post.title}
-                        </Link>
-                    </h2>
-
-                    <p className="text-base text-[var(--color-mba-text-grey)] leading-relaxed mb-6">
-                        {post.excerpt}
-                    </p>
-
+                <div className="mt-auto flex items-center justify-between pt-2">
                     <Link
                         href={`/blog/${post.id}`}
-                        className="inline-flex items-center text-sm font-medium text-[var(--color-mba-blue)] hover:text-[var(--color-mba-blue-hover)] transition-smooth"
+                        className="inline-flex items-center text-sm font-bold text-[var(--color-mba-gold)] hover:text-[#d4af37] transition-colors"
                     >
-                        Read More →
+                        Read More
+                        <ArrowRight className="ml-2 w-4 h-4" />
                     </Link>
+
+                    <div className="flex items-center gap-5 text-gray-400">
+                        <button className="hover:text-[var(--color-mba-gold)] transition-colors" aria-label="Like">
+                            <ThumbsUp className="w-5 h-5 stroke-[1.5]" />
+                        </button>
+                        <button className="hover:text-[var(--color-mba-gold)] transition-colors" aria-label="Comment">
+                            <MessageSquare className="w-5 h-5 stroke-[1.5]" />
+                        </button>
+                        <button className="hover:text-[var(--color-mba-gold)] transition-colors" aria-label="Share">
+                            <Share2 className="w-5 h-5 stroke-[1.5]" />
+                        </button>
+                    </div>
                 </div>
             </div>
         </article>

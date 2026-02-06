@@ -110,8 +110,8 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#263548]"></div>
             </div>
         );
     }
@@ -119,91 +119,109 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
     if (!post) return null;
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-8">
+        <div className="min-h-screen bg-[#F9FAFB] pb-12">
             <form onSubmit={handleSubmit}>
-                {/* Header */}
-                <div className="bg-white border-b sticky top-0 z-10">
-                    <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-                        <div>
-                            <h1 className="text-2xl font-serif font-bold text-gray-900">Edit Post</h1>
-                            <p className="text-gray-500 text-xs mt-0.5">Updates to this post will be reflected immediately.</p>
+
+
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+                    <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-4">
+                            <Link
+                                href="/admin"
+                                className="p-2 -ml-2 text-gray-400 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100"
+                            >
+                                <ArrowLeft className="w-5 h-5" />
+                            </Link>
+                            <h1 className="text-3xl  font-bold text-gray-900">Edit Post</h1>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
                             <button
                                 type="button"
-                                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors text-xs"
+                                className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm"
                             >
                                 Save Draft
                             </button>
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs flex items-center gap-2"
+                                className="px-5 py-2.5 rounded-xl bg-[#263548] text-white font-medium hover:bg-[#1f2b3b] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2 shadow-sm"
                             >
                                 {saving && (
-                                    <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                 )}
                                 {saving ? 'Saving...' : 'Update Post'}
                             </button>
                         </div>
                     </div>
-                </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-                <div className="max-w-4xl mx-auto px-4 py-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Main Content - Left Column */}
-                        <div className="lg:col-span-2 space-y-5">
-                            <div className="space-y-2">
-                                <label htmlFor="title" className="block text-sm font-bold text-gray-900">
-                                    Post Title
-                                </label>
-                                <input
-                                    type="text"
-                                    name="title"
-                                    id="title"
-                                    defaultValue={post.title}
-                                    className={`w-full px-3 py-2 bg-white border rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-gray-900 placeholder-gray-400 text-base ${errors.title ? 'border-red-500' : 'border-gray-200'
-                                        }`}
-                                    placeholder="Enter a catchy title..."
-                                />
-                                {errors.title && <p className="text-red-500 text-xs">{errors.title}</p>}
-                            </div>
+                        <div className="lg:col-span-2">
+                            <div className="bg-[#FAF9F6] border border-[#E5E5E5] rounded-md p-6 shadow-sm">
+                                <h2 className="text-2xl  font-bold text-[#1F2937] mb-6">Post Details</h2>
 
-                            <div className="space-y-2">
-                                <label htmlFor="excerpt" className="block text-sm font-bold text-gray-900">
-                                    Excerpt
-                                </label>
-                                <textarea
-                                    name="excerpt"
-                                    id="excerpt"
-                                    defaultValue={post.excerpt}
-                                    rows={3}
-                                    className={`w-full px-3 py-2 bg-white border rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm resize-none ${errors.excerpt ? 'border-red-500' : 'border-gray-200'
-                                        }`}
-                                    placeholder="Write a short summary that will appear in previews..."
-                                />
-                                {errors.excerpt && <p className="text-red-500 text-xs">{errors.excerpt}</p>}
-                            </div>
+                                <div className="space-y-5">
+                                    <div className="space-y-2">
+                                        <label htmlFor="title" className="block text-sm font-bold text-gray-800">
+                                            Post Title
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="title"
+                                            id="title"
+                                            defaultValue={post.title}
+                                            className={`w-full px-4 py-3 bg-[#FAF9F6] border rounded-xl focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] outline-none transition-all text-gray-900 placeholder-gray-400 text-lg f ${errors.title ? 'border-red-500' : 'border-[#E5E5E5]'
+                                                }`}
+                                            placeholder="Enter a catchy title..."
+                                        />
+                                        {errors.title && <p className="text-red-500 text-xs">{errors.title}</p>}
+                                    </div>
 
-                            <div className="space-y-2">
-                                <label htmlFor="content" className="block text-sm font-bold text-gray-900">
-                                    Content
-                                </label>
-                                <div className={`border rounded-lg bg-white overflow-hidden ${errors.content ? 'border-red-500' : 'border-gray-200'}`}>
-                                    <Editor value={content} onChange={setContent} />
+                                    <div className="space-y-2">
+                                        <label htmlFor="excerpt" className="block text-sm font-bold text-gray-800">
+                                            Excerpt
+                                        </label>
+                                        <textarea
+                                            name="excerpt"
+                                            id="excerpt"
+                                            defaultValue={post.excerpt}
+                                            rows={3}
+                                            className={`w-full px-4 py-3 bg-[#FAF9F6] border rounded-xl focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] outline-none transition-all text-gray-900 placeholder-gray-400 text-base resize-none ${errors.excerpt ? 'border-red-500' : 'border-[#E5E5E5]'
+                                                }`}
+                                            placeholder="Write a short summary..."
+                                        />
+                                        {errors.excerpt && <p className="text-red-500 text-xs">{errors.excerpt}</p>}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="content" className="block text-sm font-bold text-gray-800">
+                                            Content
+                                        </label>
+                                        <div className={`overflow-hidden rounded-xl border ${errors.content ? 'border-red-500' : 'border-[#E5E5E5]'}`}>
+                                            <Editor value={content} onChange={setContent} />
+                                        </div>
+                                        {errors.content && <p className="text-red-500 text-xs">{errors.content}</p>}
+                                    </div>
                                 </div>
-                                {errors.content && <p className="text-red-500 text-xs">{errors.content}</p>}
                             </div>
                         </div>
 
                         {/* Sidebar - Right Column */}
-                        <div className="space-y-6">
+                        <div className="space-y-3">
+                            <h3 className="text-lg font-bold text-gray-900 mb-4">Post Settings</h3>
+
                             {/* Featured Image */}
-                            <div className="space-y-2">
-                                <label className="block text-sm font-bold text-gray-900">
-                                    Featured Image
-                                </label>
-                                <div className={`relative group border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center text-center transition-all hover:bg-gray-50 ${errors.image ? 'border-red-500 bg-red-50/50' : 'border-gray-300'
+                            <div className="bg-[#FAF9F6] border border-[#E5E5E5] rounded-md p-4 shadow-sm">
+                                <div className="flex items-center justify-between mb-3">
+                                    <label className="block text-sm font-bold text-gray-900">
+                                        Featured Image
+                                    </label>
+                                    <button type="button" className="text-xs text-[#C5A059] font-medium hover:underline">
+                                        Upload
+                                    </button>
+                                </div>
+
+                                <div className={`relative group border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center text-center transition-all hover:bg-white/50 ${errors.image ? 'border-red-500 bg-red-50/50' : 'border-[#D1D5DB]'
                                     }`}>
                                     {(imagePreview || post.image) ? (
                                         <div className="w-full relative">
@@ -212,25 +230,20 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                                                 alt="Preview"
                                                 className="w-full h-40 object-cover rounded-lg shadow-sm"
                                             />
-                                            {imagePreview && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => {
-                                                        setImagePreview(null);
-                                                    }}
-                                                    className="absolute top-2 right-2 bg-white/90 text-red-500 rounded-full p-1.5 shadow-sm opacity-0 group-hover:opacity-100 transition-all hover:bg-white"
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                                </button>
-                                            )}
+                                            <button
+                                                type="button"
+                                                onClick={() => setImagePreview(null)}
+                                                className="absolute top-2 right-2 bg-white/90 text-red-500 rounded-full p-1.5 shadow-sm opacity-0 group-hover:opacity-100 transition-all hover:bg-white"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                            </button>
                                         </div>
                                     ) : (
                                         <>
-                                            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mb-2 text-gray-400">
-                                                <Upload className="w-5 h-5" />
+                                            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mb-2 text-gray-500">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
                                             </div>
-                                            <p className="text-xs font-semibold text-gray-900">Click to upload or drag</p>
-                                            <p className="text-[10px] text-gray-500 mt-1">PNG, JPG or WEBP (max. 5MB)</p>
+                                            <p className="text-xs font-semibold text-gray-700">Click to upload image</p>
                                         </>
                                     )}
                                     <input
@@ -241,10 +254,10 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     />
                                 </div>
-                                {errors.image && <p className="text-red-500 text-xs">{errors.image}</p>}
+                                {errors.image && <p className="text-red-500 text-xs mt-2">{errors.image}</p>}
                             </div>
 
-                            {/* Read Time */}
+                            {/* Estimated Read Time */}
                             <div className="space-y-2">
                                 <label htmlFor="readTime" className="block text-sm font-bold text-gray-900">
                                     Estimated Read Time
@@ -255,57 +268,50 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                                         name="readTime"
                                         id="readTime"
                                         defaultValue={post.readTime}
-                                        className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
+                                        className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E5E5E5] rounded-md focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
                                         placeholder="e.g. 5"
                                     />
-                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-medium">mins</span>
+                                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-medium">mins</span>
                                 </div>
                             </div>
 
-                            {/* Category - Visual Only */}
+                            {/* Category */}
                             <div className="space-y-2">
                                 <label className="block text-sm font-bold text-gray-900">
                                     Category
                                 </label>
                                 <div className="relative">
-                                    <select className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-gray-900 text-sm appearance-none cursor-pointer">
+                                    <select className="w-full px-4 py-3 bg-[#FAF9F6] border border-[#E5E5E5] rounded-md focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] outline-none transition-all text-gray-900 text-sm appearance-none cursor-pointer">
                                         <option>News</option>
                                         <option>Tutorial</option>
                                         <option>Article</option>
                                     </select>
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Post Visibility - Visual Only */}
-                            <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100 space-y-3">
-                                <div className="flex items-center gap-2 text-blue-900 font-bold text-sm">
+                            {/* Post Visibility */}
+                            <div className="bg-[#FAF9F6] rounded-md p-4 border border-[#E5E5E5] space-y-3 shadow-sm">
+                                <div className="flex items-center gap-2 text-gray-900 font-bold text-sm">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
                                     Post Visibility
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="flex items-center gap-2 cursor-pointer group">
+                                <div className="space-y-3">
+                                    <label className="flex items-center gap-3 cursor-pointer group">
                                         <div className="relative flex items-center">
                                             <input type="radio" name="visibility" defaultChecked className="peer sr-only" />
-                                            <div className="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:border-blue-600 peer-checked:border-4 transition-all bg-white"></div>
+                                            <div className="w-4 h-4 border border-gray-400 rounded-full peer-checked:border-[#263548] peer-checked:border-4 transition-all bg-white"></div>
                                         </div>
-                                        <span className="text-gray-700 text-xs group-hover:text-gray-900 font-medium">Public (Live immediately)</span>
+                                        <span className="text-gray-600 text-sm group-hover:text-gray-900 transition-colors">Public</span>
                                     </label>
-                                    <label className="flex items-center gap-2 cursor-pointer group">
+                                    <label className="flex items-center gap-3 cursor-pointer group">
                                         <div className="relative flex items-center">
                                             <input type="radio" name="visibility" className="peer sr-only" />
-                                            <div className="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:border-blue-600 peer-checked:border-4 transition-all bg-white"></div>
+                                            <div className="w-4 h-4 border border-gray-400 rounded-full peer-checked:border-[#263548] peer-checked:border-4 transition-all bg-white"></div>
                                         </div>
-                                        <span className="text-gray-700 text-xs group-hover:text-gray-900 font-medium">Scheduled (Set a date)</span>
-                                    </label>
-                                    <label className="flex items-center gap-2 cursor-pointer group">
-                                        <div className="relative flex items-center">
-                                            <input type="radio" name="visibility" className="peer sr-only" />
-                                            <div className="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:border-blue-600 peer-checked:border-4 transition-all bg-white"></div>
-                                        </div>
-                                        <span className="text-gray-700 text-xs group-hover:text-gray-900 font-medium">Private</span>
+                                        <span className="text-gray-600 text-sm group-hover:text-gray-900 transition-colors">Private</span>
                                     </label>
                                 </div>
                             </div>
