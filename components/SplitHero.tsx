@@ -66,6 +66,7 @@ export default function SplitHero() {
         y.set(initialY);
     }
 
+
     return (
         <div className="relative w-full min-h-screen grid grid-cols-1 lg:grid-cols-2 overflow-hidden bg-[var(--color-mba-background)] text-[var(--color-mba-text-primary)]">
 
@@ -83,7 +84,7 @@ export default function SplitHero() {
 
             {/* --- Left Content (Info) --- */}
             <motion.div
-                className="relative z-10 flex flex-col justify-center px-8 md:px-16 lg:px-24 py-32 lg:py-32 order-2 lg:order-1"
+                className="relative z-10 flex flex-col justify-center px-6 md:px-16 lg:px-24 py-24 lg:py-32 order-2 lg:order-1"
                 initial="hidden"
                 animate="visible"
                 viewport={{ once: true }}
@@ -95,34 +96,34 @@ export default function SplitHero() {
                 </motion.div>
 
                 {/* Main Text Content */}
-                <div className="flex flex-col gap-8 mt-12 lg:mt-0">
+                <div className="flex flex-col gap-6 md:gap-8 mt-8 lg:mt-0 text-center lg:text-left items-center lg:items-start">
                     <motion.h1 variants={itemVariants} className="font-serif font-bold leading-[1.1] tracking-tight text-[var(--color-mba-text-primary)]">
-                        <span className="block text-6xl md:text-7xl xl:text-8xl">Jeffrey</span>
-                        <span className="block text-6xl md:text-7xl xl:text-8xl text-[var(--color-mba-text-primary)]">
+                        <span className="block text-5xl md:text-7xl xl:text-8xl">Jeffrey</span>
+                        <span className="block text-5xl md:text-7xl xl:text-8xl text-[var(--color-mba-text-primary)]">
                             M. Drai
                         </span>
                     </motion.h1>
 
-                    <motion.div variants={itemVariants} className="flex flex-col gap-3 font-sans">
-                        <h2 className="text-xl md:text-2xl font-semibold text-[var(--color-mba-gold)] flex items-center gap-3 uppercase tracking-wider">
-                            <Dna className="text-[var(--color-mba-gold)]" size={24} />
+                    <motion.div variants={itemVariants} className="flex flex-col gap-2 md:gap-3 font-sans items-center lg:items-start">
+                        <h2 className="text-lg md:text-2xl font-semibold text-[var(--color-mba-gold)] flex items-center gap-2 md:gap-3 uppercase tracking-wider">
+                            <Dna className="text-[var(--color-mba-gold)]" size={20} />
                             Biomedical Engineer
                         </h2>
-                        <h2 className="text-xl md:text-2xl font-semibold text-[var(--color-mba-gold)] flex items-center gap-3 uppercase tracking-wider">
-                            <Activity className="text-[var(--color-mba-gold)]" size={24} />
+                        <h2 className="text-lg md:text-2xl font-semibold text-[var(--color-mba-gold)] flex items-center gap-2 md:gap-3 uppercase tracking-wider">
+                            <Activity className="text-[var(--color-mba-gold)]" size={20} />
                             STEM Researcher
                         </h2>
                     </motion.div>
 
-                    <motion.p variants={itemVariants} className="max-w-2xl text-[var(--color-mba-text-grey)] text-lg leading-relaxed border-l-[3px] border-[var(--color-mba-gold)] pl-6 font-medium font-sans">
+                    <motion.p variants={itemVariants} className="max-w-xl lg:max-w-2xl text-[var(--color-mba-text-grey)] text-base md:text-lg leading-relaxed border-l-0 lg:border-l-[3px] border-[var(--color-mba-gold)] pl-0 lg:pl-6 font-medium font-sans text-center lg:text-left">
                         Bridging the gap between biological systems and engineering solutions.
                         Dedicated to advancing healthcare technology through innovative research.
                     </motion.p>
 
                     {/* CTA & Socials */}
-                    <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-6 mt-6">
-                        <Link href="#contact" className="group relative px-8 py-4 bg-[var(--color-mba-navy)] text-white font-bold rounded-lg overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
-                            <span className="relative z-10 flex items-center gap-2">
+                    <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-6 mt-4 md:mt-6 w-full justify-center lg:justify-start">
+                        <Link href="#contact" className="group relative px-6 md:px-8 py-4 bg-[var(--color-mba-navy)] text-white font-bold rounded-lg overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 w-full sm:w-auto text-center">
+                            <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
                                 Start a Conversation <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
                             </span>
                         </Link>
@@ -143,7 +144,7 @@ export default function SplitHero() {
             </motion.div>
 
             {/* --- Right Content (Interactive Slanted Card) --- */}
-            <div className="relative w-full h-[600px] lg:h-auto flex items-center justify-center perspective-[1200px] order-1 lg:order-2"
+            <div className="relative w-full h-[500px] sm:h-[600px] lg:h-auto flex items-center justify-center perspective-[1200px] order-1 lg:order-2 pt-24 lg:pt-0"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
             >
@@ -157,17 +158,17 @@ export default function SplitHero() {
                     }}
                     initial={{ scale: 0.9, rotateY: -15, rotateX: 5 }} // Default slanted position
                     animate={{ scale: 1 }}
-                    className="relative w-[340px] h-[520px] md:w-[400px] md:h-[600px] cursor-pointer"
+                    className="relative w-[300px] h-[460px] md:w-[400px] md:h-[600px] cursor-pointer"
                 >
                     {/* --- THE CARD AESTHETIC (Blister Pack - Light Version) --- */}
 
                     {/* The "Bubble" / Main Card */}
-                    <div className="absolute inset-0 rounded-[2.5rem] border border-gray-200 bg-gradient-to-br from-white to-gray-50 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.05)] z-10 flex items-center justify-center overflow-hidden">
+                    <div className="absolute inset-0 rounded-[2rem] md:rounded-[2.5rem] border border-gray-200 bg-gradient-to-br from-white to-gray-50 shadow-[0_20px_50px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.05)] z-10 flex items-center justify-center overflow-hidden">
 
                         {/* Card Label / Branding Top */}
-                        <div className="absolute top-6 left-0 w-full flex flex-col items-center z-20">
-                            <h3 className="font-sans font-black text-2xl tracking-[0.2em] text-[var(--color-mba-text-primary)] opacity-80 uppercase">STEM PRO</h3>
-                            <span className="text-[10px] tracking-widest text-[var(--color-mba-gold)] font-bold uppercase mt-1">Action Figure Series</span>
+                        <div className="absolute top-4 md:top-6 left-0 w-full flex flex-col items-center z-20">
+                            <h3 className="font-sans font-black text-xl md:text-2xl tracking-[0.2em] text-[var(--color-mba-text-primary)] opacity-80 uppercase">STEM PRO</h3>
+                            <span className="text-[9px] md:text-[10px] tracking-widest text-[var(--color-mba-gold)] font-bold uppercase mt-1">Action Figure Series</span>
                         </div>
 
 
@@ -180,27 +181,26 @@ export default function SplitHero() {
                         />
 
                         {/* Checkered Floor/Platform inside bubble (lighter) */}
-                        <div className="absolute bottom-0 w-full h-16 bg-gray-100/50 skew-x-12 opacity-80 border-t border-gray-100"></div>
+                        <div className="absolute bottom-0 w-full h-12 md:h-16 bg-gray-100/50 skew-x-12 opacity-80 border-t border-gray-100"></div>
 
                         {/* The Action Figure (Image) */}
                         <motion.div
                             animate={{ y: [0, -5, 0] }}
                             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                            className="relative w-full h-full flex items-end justify-center pb-8"
+                            className="relative w-full h-full flex items-end justify-center pb-6 md:pb-8"
                         >
                             <Image
                                 src="/dry.png"
                                 alt="Jeffrey Mawusi Drai Figure"
                                 width={500}
                                 height={800}
-                                className="object-contain h-[85%] w-auto drop-shadow-[0_20px_20px_rgba(0,0,0,0.15)] z-20"
+                                className="object-contain h-[80%] md:h-[85%] w-auto drop-shadow-[0_20px_20px_rgba(0,0,0,0.15)] z-20"
                                 priority
                             />
                         </motion.div>
-
                         {/* Card Label / Branding Bottom */}
-                        <div className="absolute bottom-8 left-0 w-full flex flex-col items-center z-20">
-                            <div className="bg-[var(--color-mba-gold)] text-white px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase shadow-md">
+                        <div className="absolute bottom-6 md:bottom-8 left-0 w-full flex flex-col items-center z-20">
+                            <div className="bg-[var(--color-mba-gold)] text-white px-3 py-1 md:px-4 md:py-1 rounded-full text-[10px] md:text-xs font-bold tracking-widest uppercase shadow-md">
                                 Jeffrey M. Drai
                             </div>
                         </div>

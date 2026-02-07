@@ -1,216 +1,135 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import Timeline from "@/components/Timeline";
-import ContactCTA from "@/components/ContactCTA";
-import Image from "next/image";
-import { Landmark, Sprout, Briefcase, Palette, Users, Heart, Check } from "lucide-react";
 
-const timelineEntries = [
-    {
-        year: "2025",
-        title: "Deputy Minister of Food and Agriculture",
-        description: "Appointed by President John Dramani Mahama and sworn into office on March 13, 2025."
-    },
-    {
-        year: "2024",
-        title: "Member of Parliament - Ayawaso West Wuogon",
-        description: "Won the parliamentary election convincingly on the ticket of the National Democratic Congress (NDC)."
-    },
-    {
-        year: "2020",
-        title: "Contested 2020 General Elections",
-        description: "Represented the NDC in the Ayawaso West Wuogon Constituency, narrowly missing the seat in a hard-fought campaign."
-    },
-    {
-        year: "2019",
-        title: "NDC Parliamentary Primaries Victory",
-        description: "Won the NDC primaries with 758 votes to become the parliamentary candidate for Ayawaso West Wuogon."
-    },
-    {
-        year: "2014",
-        title: "Social Media Milestone",
-        description: "Became the first Ghanaian to hit 1 million likes on Facebook, cementing status as a digital influencer."
-    },
-    {
-        year: "2013",
-        title: "Best Actor - Ghana Movie Awards",
-        description: "Won Best Actor in a Lead Role for 'A Northern Affair', adding to a growing list of accolades."
-    },
-    {
-        year: "2012",
-        title: "Launched J.Melo & Agriculture Ventures",
-        description: "Established the J.Melo clothing line and expanded into commercial crop and animal farming."
-    },
-    {
-        year: "1991",
-        title: "Acting Debut",
-        description: "Started acting career at age 7 in the movie 'Baby Thief', paving the way for a stellar career in film."
-    }
-];
+import Footer from "@/components/Footer";
+import Contact from "@/components/Contact";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function AboutPage() {
     return (
         <>
-            <Navbar />
-            <main className="min-h-screen bg-[var(--color-mba-background)] pt-16">
+            <main className="min-h-screen bg-[var(--color-mba-background)] pt-32 pb-24">
                 <div className="section-padding">
-                    <div className="max-w-7xl mx-auto">
-                        {/* Header */}
-                        <div className="text-center mb-12">
-                            <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-mba-text-primary)] mb-6">
-                                About John Dumelo
+                    <div className="max-w-[1400px] mx-auto">
+
+                        {/* 1. Header Section */}
+                        <div className="mb-16 md:mb-24">
+                            <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-bold text-[var(--color-mba-text-primary)] mb-12 font-[family-name:var(--font-oswald)] uppercase leading-[0.9] tracking-tighter">
+                                MEET <br /> JEFFREY MAWUSI DRAI
                             </h1>
-                            <div className="w-16 h-0.5 bg-[var(--color-mba-blue)] mx-auto mb-6" />
-                        </div>
 
-                        {/* Headshot and Introduction */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-                            <div className="relative aspect-[3/4] overflow-hidden">
-                                <Image
-                                    src="https://i.pinimg.com/736x/ae/82/5a/ae825a138458c91f838280f80cea701a.jpg"
-                                    alt="John Dumelo - Professional Portrait"
-                                    fill
-                                    className="object-cover"
-                                    sizes="(max-width: 1024px) 100vw, 50vw"
-                                    priority
-                                />
-                            </div>
-
-                            <div className="space-y-6">
-                                <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-mba-text-primary)]">
-                                    Biography
-                                </h2>
-                                <div className="space-y-4 text-lg text-[var(--color-mba-text-grey)] leading-relaxed">
-                                    <p>
-                                        John Matthew Kofi Setor Dumelo is a distinguished Ghanaian actor, politician, and entrepreneur.
-                                        Born on February 3, 1984, in Accra with roots in Likpe Bala, Oti Region, he has grown to become
-                                        one of the most influential figures in Ghana.
-                                    </p>
-                                    <p>
-                                        John's journey began at Christ the King School and Achimota School, where he was part of the Drama Club.
-                                        He later studied Civil Engineering at KNUST and furthered his education at GIMPA's School of Public Service and Governance.
-                                    </p>
-                                    <p>
-                                        As an actor, John has graced screens for over two decades, winning awards such as the "African Most Outstanding Actor"
-                                        at the Afro Australian Movies and Music Awards and Best Actor at the Ghana Movie Awards.
-                                    </p>
-                                    <p>
-                                        Transitioning into public service, John is currently the Member of Parliament for Ayawaso West Wuogon
-                                        and serves as the Deputy Minister of Food and Agriculture. He is a passionate advocate for youth development,
-                                        agriculture, and job creation.
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-end border-t border-gray-200 pt-8">
+                                <div className="max-w-xl">
+                                    <p className="text-lg text-[var(--color-mba-text-grey)] leading-relaxed font-light">
+                                        Jeffrey Mawusi Drai is a Ghanaian bioengineering researcher and scholar currently based at the Lassonde School of Engineering at York University in Canada.
+                                        Recognized for his academic excellence, he is actively involved in STEM advocacy and student leadership.
                                     </p>
                                 </div>
-
-                                <a
-                                    href="#contact"
-                                    className="inline-block px-6 py-3 bg-[var(--color-mba-blue)] text-white text-sm font-medium uppercase tracking-wide hover:bg-[var(--color-mba-blue-hover)] transition-smooth hover-glow mt-6"
-                                >
-                                    Contact Office
-                                </a>
+                                <div className="flex flex-col lg:items-end justify-between h-full gap-6">
+                                    <p className="text-sm md:text-base text-[var(--color-mba-text-grey)] max-w-md lg:text-right font-light">
+                                        Currently an NSERC CREATE Research Fellow focusing on bioengineering, 3D bioprinting, and data analysis to drive medical innovation.
+                                    </p>
+                                    <Link
+                                        href="#contact"
+                                        className="inline-flex items-center text-sm font-bold tracking-[0.2em] text-[var(--color-mba-text-primary)] hover:text-[var(--color-mba-gold)] transition-colors uppercase group"
+                                    >
+                                        LEARN MORE
+                                        <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                                    </Link>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Experience Timeline */}
-                        <div className="mb-16">
-                            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-mba-text-primary)] mb-8">
-                                Life & Career Timeline
-                            </h2>
-                            <Timeline entries={timelineEntries} />
+                        {/* 2. Hero Image Section - Wide */}
+                        <div className="w-full aspect-[4/3] md:aspect-[21/9] relative mb-24 md:mb-32 overflow-hidden bg-gray-100">
+                            <Image
+                                src="https://media.licdn.com/dms/image/v2/C4E22AQHYH1Y5DvHjAQ/feedshare-shrink_800/feedshare-shrink_800/0/1654290870119?e=2147483647&v=beta&t=iq7RzeIzADwwvxFtodoTI9Sh23O2nBfkziea2CHxpvo"
+                                alt="Jeffrey Mawusi Drai Team / Vision"
+                                fill
+                                className="object-cover object-[50%_13%]"
+                                sizes="100vw"
+                                priority
+                                quality={100}
+                                unoptimized
+                            />
                         </div>
 
-                        {/* Memberships - Replaced with Awards/Recognition for now or kept generic */}
-                        {/* We could comment this out if we don't have membership badges content, but let's leave it if it's generic images. 
-                            Actually, looking at previous steps, MembershipBadges was imported. I'll keep it but maybe we should check it later. 
-                            For now, I'll assume it's okay or generic.
-                            Wait, John Dumelo doesn't necesarilly have "MembershipBadges" like Forbes BLK same as Moses. 
-                            I will comment it out or remove it to be safe.
-                        */}
-                        {/* <div className="mb-20">
-                            <MembershipBadges />
-                        </div> */}
-
-                        {/* Areas of Focus - Redesigned */}
-                        <div className="py-8 bg-[var(--color-mba-surface)] -mx-[calc((100vw-100%)/2)] px-[calc((100vw-100%)/2)]">
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                                <div className="text-center mb-12">
-                                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
-                                        Areas of Focus
+                        {/* 3. Inside John Dumelo Section */}
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 mb-24">
+                            {/* Left Sticky Label */}
+                            <div className="lg:col-span-4">
+                                <div className="sticky top-32">
+                                    <h2 className="text-4xl md:text-5xl font-[family-name:var(--font-oswald)] uppercase text-[var(--color-mba-text-primary)] mb-2">
+                                        INSIDE
                                     </h2>
-                                    <div className="w-16 h-0.5 bg-[var(--color-mba-blue)] mx-auto" />
+                                    <h2 className="text-4xl md:text-5xl font-[family-name:var(--font-playfair)] italic text-[var(--color-mba-text-grey)]">
+                                        JEFFREY MAWUSI DRAI
+                                    </h2>
+                                </div>
+                            </div>
+
+                            {/* Right Content */}
+                            <div className="lg:col-span-8 space-y-20">
+                                {/* Intro Paragraph */}
+                                <div>
+                                    <p className="text-xl md:text-2xl leading-relaxed text-[var(--color-mba-text-primary)] font-light max-w-3xl">
+                                        Bridging the gap between engineering and medicine.
+                                        With a First Class Honours foundation from the University of Ghana and advanced research at York University,
+                                        Jeffrey combines technical expertise in 3D bioprinting with a passion for educational empowerment.
+                                    </p>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto gap-3 grid-flow-dense">
-                                    {[
-                                        {
-                                            icon: Landmark,
-                                            title: "Politics & Governance",
-                                            description: "Representing the people and driving legislative change for national development. Focusing on policy reform, community engagement, and sustainable development initiatives that directly impact the lives of citizens. Dedicated to transparent leadership and accountable governance to build a stronger future for Ghana.",
-                                            checkpoints: [
-                                                "Member of Parliament (Ayawaso West Wuogon)",
-                                                "Deputy Minister-Designate for Food and Agriculture",
-                                                "Deputy Minister for Food and Agriculture (In Office)"
-                                            ],
-                                            className: "md:col-span-2 md:row-span-2"
-                                        },
-                                        {
-                                            icon: Sprout,
-                                            title: "Agriculture",
-                                            description: "Advocating for modern farming, food security, and youth involvement in agriculture."
-                                        },
-                                        {
-                                            icon: Briefcase,
-                                            title: "Entrepreneurship",
-                                            description: "Creating jobs and opportunities through ventures like J.Melo and commercial farming."
-                                        },
-                                        {
-                                            icon: Palette,
-                                            title: "Arts & Culture",
-                                            description: "Promoting the Ghanaian creative arts industry through film and advocacy."
-                                        },
-                                        {
-                                            icon: Users,
-                                            title: "Youth Empowerment",
-                                            description: "Mentoring and supporting the youth through education and skills training."
-                                        },
-                                        {
-                                            icon: Heart,
-                                            title: "Philanthropy",
-                                            description: "Supporting underprivileged communities through the John Dumelo Foundation."
-                                        }
-                                    ].map((area, index) => (
-                                        <div
-                                            key={index}
-                                            className={`bg-[var(--color-mba-background)] p-5 md:p-6 rounded-xl border border-white/5 hover:border-[var(--color-mba-blue)]/30 transition-all duration-300 group hover:-translate-y-1 h-full flex flex-col justify-start w-full mx-auto ${area.className || ""}`}
-                                        >
-                                            <div className="w-12 h-12 rounded-lg bg-[var(--color-mba-blue)]/10 flex items-center justify-center mb-3 text-[var(--color-mba-blue)]  group-hover:text-white transition-colors duration-300 shrink-0">
-                                                <area.icon className="w-6 h-6" />
-                                            </div>
-                                            <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[var(--color-mba-blue)] transition-colors">
-                                                {area.title}
-                                            </h3>
-                                            <p className="text-white/60 leading-relaxed text-sm">
-                                                {area.description}
-                                            </p>
-                                            {area.checkpoints && (
-                                                <div className="mt-6 space-y-3">
-                                                    {area.checkpoints.map((point, idx) => (
-                                                        <div key={idx} className="flex items-start gap-3">
-                                                            <div className="w-5 h-5 rounded border border-[var(--color-mba-blue)]/30 flex items-center justify-center bg-[var(--color-mba-blue)]/10 text-[var(--color-mba-blue)] shrink-0 mt-0.5">
-                                                                <Check className="w-3 h-3" />
-                                                            </div>
-                                                            <span className="text-white/80 text-sm font-medium">{point}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
+                                {/* List Items */}
+                                <div className="space-y-16 border-t border-gray-100 pt-16">
+                                    {/* Item 01 */}
+                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                                        <div className="md:col-span-2 text-xs font-bold text-[var(--color-mba-text-grey)] mt-1">01</div>
+                                        <div className="md:col-span-3">
+                                            <h3 className="text-2xl font-[family-name:var(--font-oswald)] text-[var(--color-mba-text-primary)]">Research & Innovation</h3>
                                         </div>
-                                    ))}
+                                        <div className="md:col-span-7">
+                                            <p className="text-[var(--color-mba-text-grey)] leading-relaxed">
+                                                As an NSERC CREATE Research Fellow, Jeffrey focuses on cutting-edge bioengineering and 3D bioprinting.
+                                                His work leverages data analysis to push the boundaries of medical research, aiming to develop sustainable and impactful healthcare solutions.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Item 02 */}
+                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start border-t border-gray-100 pt-16">
+                                        <div className="md:col-span-2 text-xs font-bold text-[var(--color-mba-text-grey)] mt-1">02</div>
+                                        <div className="md:col-span-3">
+                                            <h3 className="text-2xl font-[family-name:var(--font-oswald)] text-[var(--color-mba-text-primary)]">Academic Excellence</h3>
+                                        </div>
+                                        <div className="md:col-span-7">
+                                            <p className="text-[var(--color-mba-text-grey)] leading-relaxed">
+                                                Jeffrey graduated top of his class from the University of Ghana with a 3.81/4.00 FGPA in Biomedical Engineering.
+                                                His commitment to excellence has been recognized with the GNPC Foundation Scholarship and the Dean’s Honour Award.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Item 03 */}
+                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start border-t border-gray-100 pt-16">
+                                        <div className="md:col-span-2 text-xs font-bold text-[var(--color-mba-text-grey)] mt-1">03</div>
+                                        <div className="md:col-span-3">
+                                            <h3 className="text-2xl font-[family-name:var(--font-oswald)] text-[var(--color-mba-text-primary)]">Leadership & Advocacy</h3>
+                                        </div>
+                                        <div className="md:col-span-7">
+                                            <p className="text-[var(--color-mba-text-grey)] leading-relaxed">
+                                                Beyond the lab, Jeffrey is a relentless advocate for STEM. From mentoring high schoolers in robotics with Umoja Robotics
+                                                to coordinating quality education initiatives for Bridge QE Africa, he is dedicated to empowering the next generation of African innovators.
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Contact CTA */}
-                        <ContactCTA />
+                        <div className="border-t border-gray-200 pt-16">
+                            <Contact />
+                        </div>
                     </div>
                 </div>
             </main>
