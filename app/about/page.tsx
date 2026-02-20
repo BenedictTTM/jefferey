@@ -54,7 +54,7 @@ export default function AboutPage() {
                             />
                         </div>
 
-                        {/* 3. Inside John Dumelo Section */}
+                        {/* 3. Inside Mawusi Drai Section */}
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 mb-24">
                             {/* Left Sticky Label */}
                             <div className="lg:col-span-4">

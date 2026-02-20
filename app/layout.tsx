@@ -29,13 +29,12 @@ const oswald = Oswald({
 });
 
 export const metadata: Metadata = {
-  title: "John Dumelo | Actor, Politician & Entrepreneur",
-  description: "Official portfolio of John Dumelo - Member of Parliament for Ayawaso West Wuogon, Deputy Minister of Food and Agriculture, Actor, and Entrepreneur.",
-  keywords: "John Dumelo, Politician, Actor, Entrepreneur, Ghana, Ayawaso West Wuogon, Deputy Minister, Agriculture",
-  authors: [{ name: "John Dumelo" }],
+  title: "Mawusi Drai | Engineer, Public Speaker & Researcher",
+  description: "Official portfolio of Mawusi Drai - Engineer, Public Speaker, and Researcher.",
+  keywords: "Mawusi Drai, Engineer, Public Speaker, Researcher, Ghana",
+  authors: [{ name: "Mawusi Drai" }],
   openGraph: {
-    title: "John Dumelo | Actor, Politician & Entrepreneur",
-    description: "Member of Parliament for Ayawaso West Wuogon, Deputy Minister of Food and Agriculture, and Award-Winning Actor.",
+    title: "Mawusi Drai ",
     type: "website",
   },
 };
