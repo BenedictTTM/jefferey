@@ -7,4 +7,5 @@ export interface BlogPost {
     image: string;
     readTime: string;
     category: string;
+    likesCount?: number;
 }

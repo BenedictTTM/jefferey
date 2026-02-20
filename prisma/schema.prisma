@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,11 +10,29 @@ datasource db {
 model Post {
   id        String   @id @default(cuid())
   title     String
-  excerpt   String
-  content   String
+  excerpt   String?
+  content   String?
   date      DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  image     String
-  readTime  String   @default("5 min")
-  category  String   @default("Uncategorized")
+  image     String?
+  readTime  String  @default("5 min")
+  category  String  @default("Uncategorized")
+  published Boolean @default(false)
+
+  likes      Like[]
+  likesCount Int    @default(0)
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  userId    String
+  message   String?
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId]) // Enforce one like per user per post
+  @@index([postId])
 }

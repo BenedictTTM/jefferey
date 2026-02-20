@@ -36,11 +36,12 @@ export default async function SingleBlogPage({
             );
         }
 
-        // Serialize date (just in case, though BlogPostContent handles Date object if server->client passing works, 
-        // but Next.js usually warns about passing Date objects to client components. 
-        // We will pass it as a serialized object just to be safe / explicit.)
         const serializedPost = {
             ...post,
+            excerpt: post.excerpt || '',
+            content: post.content || '',
+            image: post.image || '',
+            category: post.category || 'Uncategorized',
             date: post.date.toISOString(),
         };
 

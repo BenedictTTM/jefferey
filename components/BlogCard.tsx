@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ThumbsUp, MessageSquare, Share2 } from "lucide-react";
+import LikeButton from "./LikeButton";
 
 import { BlogPost } from "@/types/blog";
 
@@ -51,9 +52,7 @@ export default function BlogCard({ post }: BlogCardProps) {
                     </Link>
 
                     <div className="flex items-center gap-5 text-gray-400">
-                        <button className="hover:text-[var(--color-mba-gold)] transition-colors" aria-label="Like">
-                            <ThumbsUp className="w-5 h-5 stroke-[1.5]" />
-                        </button>
+                        <LikeButton postId={post.id} initialLikes={post.likesCount || 0} />
                         <button className="hover:text-[var(--color-mba-gold)] transition-colors" aria-label="Comment">
                             <MessageSquare className="w-5 h-5 stroke-[1.5]" />
                         </button>

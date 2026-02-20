@@ -7,6 +7,7 @@ import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { BlogPost } from "@/types/blog";
 import { useRef } from "react";
+import LikeButton from "@/components/LikeButton";
 
 interface BlogPostContentProps {
     post: BlogPost;
@@ -130,6 +131,9 @@ export default function BlogPostContent({ post }: BlogPostContentProps) {
 
                         {/* Footer / Share */}
                         <div className="mt-16 pt-10 border-t border-gray-100 flex flex-col items-center text-center">
+                            <div className="mb-8">
+                                <LikeButton postId={post.id} initialLikes={post.likesCount || 0} className="scale-125 gap-2" />
+                            </div>
                             <span className="text-xs font-bold tracking-[0.2em] text-[var(--color-mba-text-grey)] uppercase mb-6">Share this article</span>
                             <div className="flex gap-6">
                                 <button className="group w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:border-[var(--color-mba-gold)] hover:bg-[var(--color-mba-gold)] transition-all duration-300">
@@ -153,4 +157,3 @@ export default function BlogPostContent({ post }: BlogPostContentProps) {
         </>
     );
 }
-

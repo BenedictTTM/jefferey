@@ -8,7 +8,7 @@ import { use } from 'react';
 
 import Editor from '@/components/Editor';
 
-import { postSchema } from '@/lib/schemas';
+import { createPostSchema, postSchema } from '@/lib/schemas';
 import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 
@@ -32,7 +32,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             if (response.ok) {
                 const data = await response.json();
                 setPost(data);
-                setContent(data.content);
+                setContent(data.content || '');
             } else {
                 alert('Failed to fetch post');
                 router.push('/admin');
@@ -77,16 +77,18 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
         },
         onError: (error: Error) => {
             console.error('Error updating post:', error);
-            alert(error.message);
+            alert(error.message); // This will now contain the server error message
         },
     });
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleSave = async (published: boolean) => {
         setErrors({});
 
-        const formData = new FormData(e.currentTarget);
+        const form = document.querySelector('form') as HTMLFormElement;
+        const formData = new FormData(form);
         const imageFile = formData.get('image') as File;
+        const visibility = formData.get('visibility');
+        const effectivePublished = visibility === 'private' ? false : published;
 
         const data = {
             title: formData.get('title'),
@@ -95,10 +97,12 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             readTime: formData.get('readTime'),
             category: formData.get('category'),
             // Only include image if a new file is uploaded
-            ...(imageFile && imageFile.size > 0 ? { image: imageFile } : {}),
+            ...(imageFile && imageFile.size > 0 ? { image: imageFile } : { image: post.image }),
+            published: effectivePublished,
         };
 
-        const result = postSchema.safeParse(data);
+        const schema = effectivePublished ? createPostSchema : postSchema;
+        const result = schema.safeParse(data);
 
         if (!result.success) {
             const formattedErrors: Record<string, string> = {};
@@ -110,6 +114,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
         }
 
         formData.set('content', content);
+        formData.set('published', String(effectivePublished));
         updatePostMutation.mutate(formData);
     };
 
@@ -125,11 +130,11 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
 
     return (
         <div className="min-h-screen bg-[#F9FAFB] pb-12">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => e.preventDefault()}>
 
 
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-                    <div className="flex items-center justify-between mb-8">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                         <div className="flex items-center gap-4">
                             <Link
                                 href="/admin"
@@ -137,24 +142,29 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                             >
                                 <ArrowLeft className="w-5 h-5" />
                             </Link>
-                            <h1 className="text-3xl  font-bold text-gray-900">Edit Post</h1>
+                            <h1 className="text-3xl font-bold text-gray-900">Edit Post</h1>
+
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="grid grid-cols-2 sm:flex sm:flex-row w-full sm:w-auto gap-3">
+
                             <button
                                 type="button"
-                                className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm"
+                                onClick={() => handleSave(false)}
+                                disabled={updatePostMutation.isPending}
+                                className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm flex items-center justify-center gap-2"
                             >
-                                Save Draft
+                                {updatePostMutation.isPending && !updatePostMutation.variables?.get('published') ? 'Saving...' : 'Save Draft'}
                             </button>
                             <button
-                                type="submit"
+                                type="button"
+                                onClick={() => handleSave(true)}
                                 disabled={updatePostMutation.isPending}
-                                className="px-5 py-2.5 rounded-xl bg-[#263548] text-white font-medium hover:bg-[#1f2b3b] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2 shadow-sm"
+                                className="px-5 py-2.5 rounded-xl bg-[#263548] text-white font-medium hover:bg-[#1f2b3b] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 shadow-sm"
                             >
-                                {updatePostMutation.isPending && (
+                                {updatePostMutation.isPending && updatePostMutation.variables?.get('published') === 'true' && (
                                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                 )}
-                                {updatePostMutation.isPending ? 'Saving...' : 'Update Post'}
+                                {updatePostMutation.isPending && updatePostMutation.variables?.get('published') === 'true' ? 'Processing...' : (post.published ? 'Update Post' : 'Publish Post')}
                             </button>
                         </div>
                     </div>
@@ -310,14 +320,14 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                                 <div className="space-y-3">
                                     <label className="flex items-center gap-3 cursor-pointer group">
                                         <div className="relative flex items-center">
-                                            <input type="radio" name="visibility" defaultChecked className="peer sr-only" />
+                                            <input type="radio" name="visibility" value="public" defaultChecked className="peer sr-only" />
                                             <div className="w-4 h-4 border border-gray-400 rounded-full peer-checked:border-[#263548] peer-checked:border-4 transition-all bg-white"></div>
                                         </div>
                                         <span className="text-gray-600 text-sm group-hover:text-gray-900 transition-colors">Public</span>
                                     </label>
                                     <label className="flex items-center gap-3 cursor-pointer group">
                                         <div className="relative flex items-center">
-                                            <input type="radio" name="visibility" className="peer sr-only" />
+                                            <input type="radio" name="visibility" value="private" className="peer sr-only" />
                                             <div className="w-4 h-4 border border-gray-400 rounded-full peer-checked:border-[#263548] peer-checked:border-4 transition-all bg-white"></div>
                                         </div>
                                         <span className="text-gray-600 text-sm group-hover:text-gray-900 transition-colors">Private</span>

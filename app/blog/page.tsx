@@ -8,6 +8,9 @@ export const dynamic = 'force-dynamic';
 
 export default async function BlogPage() {
     const posts = await prisma.post.findMany({
+        where: {
+            published: true,
+        },
         orderBy: {
             date: 'desc',
         },
@@ -16,6 +19,9 @@ export default async function BlogPage() {
     // Map Prisma Post to BlogPost (ensure category exists)
     const blogPosts = posts.map(post => ({
         ...post,
+        excerpt: post.excerpt || '',
+        content: post.content || '',
+        image: post.image || '',
         category: post.category || 'Uncategorized',
         date: post.date.toISOString(),
     }));

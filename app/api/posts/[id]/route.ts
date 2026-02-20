@@ -2,6 +2,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -67,45 +70,72 @@ export async function PUT(
     const excerpt = formData.get('excerpt') as string;
     const content = formData.get('content') as string;
     const category = formData.get('category') as string;
-    const image = formData.get('image') as File | null;
+
+    // Safer file retrieval
+    const imageEntry = formData.get('image');
+    const image = (imageEntry && typeof imageEntry === 'object' && 'arrayBuffer' in imageEntry) ? imageEntry as File : null;
+
     const readTime = formData.get('readTime') as string;
+    const published = formData.get('published') === 'true';
+
+    console.log('Updating post:', { id, title, category, published, hasImage: !!image });
+
+    if (published && (!title || !content || !excerpt)) {
+      return NextResponse.json({ error: 'Title, Content and Excerpt are required to publish' }, { status: 400 });
+    }
 
     const dataToUpdate: any = {
       title,
-      excerpt,
-      content,
+      excerpt: excerpt || '',
+      content: content || '',
       category,
       readTime,
+      published,
     };
 
     if (image && image.size > 0) {
-      const bytes = await image.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      console.log('Uploading image for update...');
+      try {
+        const bytes = await image.arrayBuffer();
+        const buffer = Buffer.from(bytes);
 
-      // Upload to Cloudinary
-      const uploadResult = await new Promise<any>((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          { folder: 'blog-posts' },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        ).end(buffer);
-      });
+        // Upload to Cloudinary
+        const uploadResult = await new Promise<any>((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'blog-posts' },
+            (error, result) => {
+              if (error) {
+                console.error('Cloudinary upload error:', error);
+                reject(error);
+              } else resolve(result);
+            }
+          );
+          uploadStream.end(buffer);
+        });
 
-      dataToUpdate.image = uploadResult.secure_url;
+        dataToUpdate.image = uploadResult.secure_url;
+        console.log('Image uploaded:', dataToUpdate.image);
+      } catch (uploadError) {
+        console.error('Failed to upload image during update:', uploadError);
+        return NextResponse.json({ error: 'Failed to upload image', details: uploadError }, { status: 500 });
+      }
     }
 
+    console.log('Updating database...');
     const post = await prisma.post.update({
       where: {
         id,
       },
       data: dataToUpdate,
     });
+    console.log('Post updated:', post.id);
 
     return NextResponse.json(post);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating post:', error);
-    return NextResponse.json({ error: 'Failed to update post' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || 'Failed to update post', details: error },
+      { status: 500 }
+    );
   }
 }

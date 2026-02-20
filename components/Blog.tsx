@@ -3,13 +3,16 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import BlogCard from "./BlogCard";
+import { BlogPost } from "@/types/blog";
 
-import { blogPosts } from "@/lib/blog-data";
+interface BlogProps {
+    posts: BlogPost[];
+}
 
-export default function Blog() {
+export default function Blog({ posts }: BlogProps) {
     const [visibleCount, setVisibleCount] = useState(2);
 
-    const visiblePosts = blogPosts.slice(0, visibleCount);
+    const visiblePosts = posts.slice(0, visibleCount);
 
     const handleLoadMore = () => {
         setVisibleCount((prev) => prev + 2);
@@ -41,7 +44,7 @@ export default function Blog() {
                     ))}
                 </div>
 
-                {visibleCount < blogPosts.length && (
+                {visibleCount < posts.length && (
                     <div className="flex justify-center">
                         <button
                             onClick={handleLoadMore}

@@ -9,7 +9,7 @@ import { ArrowLeft, Upload } from 'lucide-react';
 
 import Editor from '@/components/Editor';
 
-import { createPostSchema } from '@/lib/schemas';
+import { createPostSchema, postSchema } from '@/lib/schemas';
 import { z } from 'zod';
 
 export default function CreatePostPage() {
@@ -51,15 +51,20 @@ export default function CreatePostPage() {
         },
         onError: (error: Error) => {
             console.error('Error creating post:', error);
-            alert(error.message);
+            alert(error.message); // This will now contain the server error message
         },
     });
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleSave = async (published: boolean) => {
         setErrors({});
 
-        const formData = new FormData(e.currentTarget);
+        // Create a FormData object from the form element
+        const form = document.querySelector('form') as HTMLFormElement;
+        const formData = new FormData(form);
+
+        const visibility = formData.get('visibility');
+        const effectivePublished = visibility === 'private' ? false : published;
+
         const data = {
             title: formData.get('title'),
             excerpt: formData.get('excerpt'),
@@ -67,9 +72,12 @@ export default function CreatePostPage() {
             readTime: formData.get('readTime'),
             category: formData.get('category'),
             image: formData.get('image'),
+            published: effectivePublished,
         };
 
-        const result = createPostSchema.safeParse(data);
+        // Select schema based on action
+        const schema = effectivePublished ? createPostSchema : postSchema;
+        const result = schema.safeParse(data);
 
         if (!result.success) {
             const formattedErrors: Record<string, string> = {};
@@ -81,29 +89,40 @@ export default function CreatePostPage() {
         }
 
         formData.set('content', content);
+        formData.set('published', String(effectivePublished));
         createPostMutation.mutate(formData);
     };
 
     return (
         <div className="min-h-screen bg-[#F9FAFB] pb-6">
-            <form onSubmit={handleSubmit}>
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex items-center justify-end gap-3 mb-6">
+            <form onSubmit={(e) => e.preventDefault()}>
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-6">
+                    <div className="grid grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center justify-end gap-3 mb-6">
                         <button
                             type="button"
-                            className="px-5 py-2.5 rounded-lg border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm"
+                            onClick={() => handleSave(false)}
+                            disabled={createPostMutation.isPending}
+                            className="px-5 py-2.5 rounded-lg border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm text-center flex items-center justify-center gap-2"
                         >
-                            Save Draft
+                            {createPostMutation.isPending && !createPostMutation.variables?.get('published') ? (
+                                <>
+                                    <div className="w-3 h-3 border-2 border-gray-500 border-t-transparent rounded-full animate-spin" />
+                                    <span>Saving...</span>
+                                </>
+                            ) : (
+                                'Save Draft'
+                            )}
                         </button>
                         <button
-                            type="submit"
+                            type="button"
+                            onClick={() => handleSave(true)}
                             disabled={createPostMutation.isPending}
-                            className="px-5 py-2.5 rounded-lg bg-[#263548] text-white font-medium hover:bg-[#1f2b3b] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2 shadow-sm"
+                            className="px-5 py-2.5 rounded-lg bg-[#263548] text-white font-medium hover:bg-[#1f2b3b] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2 shadow-sm"
                         >
-                            {createPostMutation.isPending && (
+                            {createPostMutation.isPending && createPostMutation.variables?.get('published') === 'true' && (
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             )}
-                            {createPostMutation.isPending ? 'Creating...' : 'Create Post'}
+                            {createPostMutation.isPending && createPostMutation.variables?.get('published') === 'true' ? 'Processing...' : 'Publish Post'}
                         </button>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -255,14 +274,14 @@ export default function CreatePostPage() {
                                 <div className="space-y-3">
                                     <label className="flex items-center gap-3 cursor-pointer group">
                                         <div className="relative flex items-center">
-                                            <input type="radio" name="visibility" defaultChecked className="peer sr-only" />
+                                            <input type="radio" name="visibility" value="public" defaultChecked className="peer sr-only" />
                                             <div className="w-4 h-4 border border-gray-400 rounded-full peer-checked:border-[#263548] peer-checked:border-4 transition-all bg-white"></div>
                                         </div>
                                         <span className="text-gray-600 text-sm group-hover:text-gray-900 transition-colors">Public</span>
                                     </label>
                                     <label className="flex items-center gap-3 cursor-pointer group">
                                         <div className="relative flex items-center">
-                                            <input type="radio" name="visibility" className="peer sr-only" />
+                                            <input type="radio" name="visibility" value="private" className="peer sr-only" />
                                             <div className="w-4 h-4 border border-gray-400 rounded-full peer-checked:border-[#263548] peer-checked:border-4 transition-all bg-white"></div>
                                         </div>
                                         <span className="text-gray-600 text-sm group-hover:text-gray-900 transition-colors">Private</span>
